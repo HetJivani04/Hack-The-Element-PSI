@@ -1,10 +1,11 @@
 """DataCube — unified lazy-loading interface to all downloaded data."""
 import os, json, pickle, zipfile
 import numpy as np
+# pyrefly: ignore [missing-import]
 import xarray as xr
 import pandas as pd
 
-DATA_DIR = '/Users/anandlo/Elements/Hack-The-Element-PSI/data'
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
 
 class DataCube:
     """Lazy-loading interface that extracts variables from real data files.
@@ -146,9 +147,10 @@ class DataCube:
 # FusedCubeReader — reads from regridded Zarr cube produced by builder
 # ══════════════════════════════════════════════════════════════════════════════
 
+# pyrefly: ignore [missing-import]
 import zarr as _zarr
 
-CUBE_DIR = '/Users/anandlo/Elements/Hack-The-Element-PSI/cube/fused'
+CUBE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'cube', 'fused')
 
 DOMAIN_VAR_MAP = {
     'physics_3d': ['thetao', 'so', 'uo', 'vo', 'depth'],

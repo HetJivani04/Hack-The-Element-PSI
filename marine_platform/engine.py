@@ -721,7 +721,7 @@ class Orchestrator:
         self.site_lon = site_lon
         self.runner = ToolRunner(cube, turbine)
         self.results: Dict[str, ToolResult] = {}
-        self._cache_dir = '/Users/anandlo/Elements/Hack-The-Element-PSI/cube/cache'
+        self._cache_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'cube', 'cache')
         os.makedirs(self._cache_dir, exist_ok=True)
 
     def _cache_key(self, tool_id: str) -> str:

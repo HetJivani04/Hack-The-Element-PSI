@@ -1,9 +1,10 @@
 """Build the fused data cube from all downloaded data files."""
 import os, json, pickle, zipfile, glob
 import numpy as np
+# pyrefly: ignore [missing-import]
 import xarray as xr
 
-DATA_DIR = '/Users/anandlo/Elements/Hack-The-Element-PSI/data'
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
 
 def build_cube_metadata() -> dict:
     """Scan data directory and build metadata mapping every file to variables."""

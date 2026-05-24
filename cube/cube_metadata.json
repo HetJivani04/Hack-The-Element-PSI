@@ -9,7 +9,7 @@
   },
   "sources": {
     "glorys_physics": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/glorys_physics_2016_2023.nc",
+      "file": "/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/glorys_physics_2016_2023.nc",
       "variables": [
         "thetao",
         "so",
@@ -28,38 +28,8 @@
       "spatial_resolution": "1/12\u00b0",
       "quality_flag": 2
     },
-    "thetao_nrt": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/thetao_nrt_2024_2026.nc",
-      "variables": [
-        "thetao"
-      ],
-      "time_range": "2024-2026",
-      "time_resolution": "6-hourly",
-      "spatial_resolution": "1/12\u00b0",
-      "quality_flag": 3
-    },
-    "so_nrt": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/so_nrt_2024_2026.nc",
-      "variables": [
-        "so"
-      ],
-      "time_range": "2024-2026",
-      "time_resolution": "6-hourly",
-      "spatial_resolution": "1/12\u00b0",
-      "quality_flag": 3
-    },
-    "cur_nrt": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/cur_nrt_2024_2026.nc",
-      "variables": [
-        "cur"
-      ],
-      "time_range": "2024-2026",
-      "time_resolution": "6-hourly",
-      "spatial_resolution": "1/12\u00b0",
-      "quality_flag": 3
-    },
     "merged_uv_nrt": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/merged_uv_nrt_2024_2026.nc",
+      "file": "/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/merged_uv_nrt_2024_2026.nc",
       "variables": [
         "utotal",
         "vtotal",
@@ -74,7 +44,7 @@
       "quality_flag": 2
     },
     "surface_2d": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/surface_2d_2016_2026.nc",
+      "file": "/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/surface_2d_2016_2026.nc",
       "variables": [
         "zos",
         "mlotst",
@@ -97,7 +67,7 @@
       "quality_flag": 2
     },
     "sst_anomaly": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/sst_anomaly_2023_2026.nc",
+      "file": "/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/sst_anomaly_2023_2026.nc",
       "variables": [
         "sea_surface_temperature_anomaly"
       ],
@@ -107,7 +77,7 @@
       "quality_flag": 2
     },
     "bathymetry": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/bathymetry_copernicus.nc",
+      "file": "/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/bathymetry_copernicus.nc",
       "variables": [
         "deptho",
         "deptho_lev",
@@ -119,7 +89,7 @@
       "quality_flag": 3
     },
     "waves_nrt": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/waves_copernicus_2024_2026.nc",
+      "file": "/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/waves_copernicus_2024_2026.nc",
       "variables": [
         "VHM0",
         "VTPK",
@@ -147,7 +117,7 @@
       "quality_flag": 2
     },
     "waves_reanalysis": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/waves_waverys_2016_2023.nc",
+      "file": "/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/waves_waverys_2016_2023.nc",
       "variables": [
         "VHM0",
         "VTPK",
@@ -163,110 +133,8 @@
       "spatial_resolution": "0.2\u00b0",
       "quality_flag": 4
     },
-    "bgc_bio": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/bgc_bio_2024_2026.nc",
-      "variables": [
-        "nppv",
-        "o2"
-      ],
-      "time_range": "2024-2026",
-      "time_resolution": "daily",
-      "spatial_resolution": "0.25\u00b0",
-      "quality_flag": 3
-    },
-    "bgc_nut": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/bgc_nut_2024_2026.nc",
-      "variables": [
-        "fe",
-        "no3",
-        "po4",
-        "si"
-      ],
-      "time_range": "2024-2026",
-      "time_resolution": "daily",
-      "spatial_resolution": "0.25\u00b0",
-      "quality_flag": 3
-    },
-    "bgc_car": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/bgc_car_2024_2026.nc",
-      "variables": [
-        "dissic",
-        "ph",
-        "talk"
-      ],
-      "time_range": "2024-2026",
-      "time_resolution": "daily",
-      "spatial_resolution": "0.25\u00b0",
-      "quality_flag": 3
-    },
-    "bgc_co2": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/bgc_co2_2024_2026.nc",
-      "variables": [
-        "spco2"
-      ],
-      "time_range": "2024-2026",
-      "time_resolution": "daily",
-      "spatial_resolution": "0.25\u00b0",
-      "quality_flag": 3
-    },
-    "bgc_pft": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/bgc_pft_2024_2026.nc",
-      "variables": [
-        "chl",
-        "phyc"
-      ],
-      "time_range": "2024-2026",
-      "time_resolution": "daily",
-      "spatial_resolution": "0.25\u00b0",
-      "quality_flag": 3
-    },
-    "bgc_plankton": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/bgc_plankton_2024_2026.nc",
-      "variables": [
-        "zooc"
-      ],
-      "time_range": "2024-2026",
-      "time_resolution": "daily",
-      "spatial_resolution": "0.25\u00b0",
-      "quality_flag": 3
-    },
-    "bgc_optics": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/bgc_optics_2024_2026.nc",
-      "variables": [
-        "kd"
-      ],
-      "time_range": "2024-2026",
-      "time_resolution": "daily",
-      "spatial_resolution": "0.25\u00b0",
-      "quality_flag": 3
-    },
-    "era5_atmosphere": {
-      "file": [
-        "/Users/anandlo/Elements/Hack-The-Element-PSI/data/era5_atmosphere_2016.nc",
-        "/Users/anandlo/Elements/Hack-The-Element-PSI/data/era5_atmosphere_2017.nc",
-        "/Users/anandlo/Elements/Hack-The-Element-PSI/data/era5_atmosphere_2018.nc",
-        "/Users/anandlo/Elements/Hack-The-Element-PSI/data/era5_atmosphere_2019.nc",
-        "/Users/anandlo/Elements/Hack-The-Element-PSI/data/era5_atmosphere_2020.nc"
-      ],
-      "variables": [
-        "u10",
-        "v10",
-        "u100",
-        "v100",
-        "t2m",
-        "msl",
-        "sst",
-        "blh",
-        "zust",
-        "tp"
-      ],
-      "time_range": "2016-2025",
-      "time_resolution": "6-hourly",
-      "spatial_resolution": "0.25\u00b0",
-      "quality_flag": 3
-    },
     "sma_halifax": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/SMA_halifax_full_2016_2026.csv",
+      "file": "/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/SMA_halifax_full_2016_2026.csv",
       "variables": [
         "wind_spd_avg",
         "wind_dir_avg",
@@ -287,7 +155,7 @@
       "quality_flag": 1
     },
     "bbmp": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/bbmp_bedford_basin_2016_2024.csv",
+      "file": "/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/bbmp_bedford_basin_2016_2024.csv",
       "variables": [
         "Chlorophyll_A",
         "Ammonia",
@@ -307,7 +175,7 @@
       "quality_flag": 1
     },
     "obis": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/obis_occurrences_full.pkl",
+      "file": "/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/obis_occurrences_full.pkl",
       "variables": [
         "scientificName",
         "decimalLatitude",
@@ -322,7 +190,7 @@
       "quality_flag": 1
     },
     "gfw": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/gfw_vessel_presence.json",
+      "file": "/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/gfw_vessel_presence.json",
       "variables": [
         "hours",
         "vessel_class",
@@ -336,7 +204,7 @@
       "quality_flag": 2
     },
     "governance": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/governance/",
+      "file": "/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/governance/",
       "variables": [
         "mpa_boundary",
         "fisheries",
@@ -349,98 +217,8 @@
       "spatial_resolution": "polygon",
       "quality_flag": 2
     },
-    "hycom_reanalysis_2015h2": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/hycom_reanalysis_2015h2.nc",
-      "variables": [
-        "water_u",
-        "water_u_bottom",
-        "water_v",
-        "water_v_bottom",
-        "water_temp",
-        "water_temp_bottom",
-        "salinity",
-        "salinity_bottom",
-        "surf_el"
-      ],
-      "time_range": "various",
-      "time_resolution": "3-hourly",
-      "spatial_resolution": "1/12\u00b0",
-      "quality_flag": 3
-    },
-    "hycom_surface_2023-07": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/hycom_surface_2023-07.nc",
-      "variables": [
-        "surf_el",
-        "water_temp",
-        "water_temp_bottom",
-        "salinity",
-        "salinity_bottom",
-        "water_u",
-        "water_u_bottom",
-        "water_v",
-        "water_v_bottom"
-      ],
-      "time_range": "various",
-      "time_resolution": "3-hourly",
-      "spatial_resolution": "1/12\u00b0",
-      "quality_flag": 3
-    },
-    "hycom_surface_jul2020": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/hycom_surface_jul2020.nc",
-      "variables": [
-        "surf_el",
-        "water_temp",
-        "water_temp_bottom",
-        "salinity",
-        "salinity_bottom",
-        "water_u",
-        "water_u_bottom",
-        "water_v",
-        "water_v_bottom"
-      ],
-      "time_range": "various",
-      "time_resolution": "3-hourly",
-      "spatial_resolution": "1/12\u00b0",
-      "quality_flag": 3
-    },
-    "hycom_surface_2019-07": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/hycom_surface_2019-07.nc",
-      "variables": [
-        "surf_el",
-        "water_temp",
-        "water_temp_bottom",
-        "salinity",
-        "salinity_bottom",
-        "water_u",
-        "water_u_bottom",
-        "water_v",
-        "water_v_bottom"
-      ],
-      "time_range": "various",
-      "time_resolution": "3-hourly",
-      "spatial_resolution": "1/12\u00b0",
-      "quality_flag": 3
-    },
-    "hycom_surface_2021-01": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/hycom_surface_2021-01.nc",
-      "variables": [
-        "surf_el",
-        "water_temp",
-        "water_temp_bottom",
-        "salinity",
-        "salinity_bottom",
-        "water_u",
-        "water_u_bottom",
-        "water_v",
-        "water_v_bottom"
-      ],
-      "time_range": "various",
-      "time_resolution": "3-hourly",
-      "spatial_resolution": "1/12\u00b0",
-      "quality_flag": 3
-    },
     "openmeteo_marine": {
-      "file": "/Users/anandlo/Elements/Hack-The-Element-PSI/data/marine_openmeteo_2016_2026.pkl",
+      "file": "/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/marine_openmeteo_2016_2026.pkl",
       "variables": [
         "wave_height",
         "wave_direction",

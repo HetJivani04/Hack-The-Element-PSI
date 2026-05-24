@@ -1,0 +1,20 @@
+{
+  "A1_baseline": {
+    "status": "failed",
+    "outputs": {},
+    "statistics": [],
+    "warnings": [
+      "[Errno 2] No such file or directory: '/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/bathymetry_copernicus.nc'"
+    ],
+    "timing_s": 0.0
+  },
+  "C1_lagrangian": {
+    "status": "failed",
+    "outputs": {},
+    "statistics": [],
+    "warnings": [
+      "[Errno 2] No such file or directory: '/Users/hetjivani/Hack_The_Element/Hack-The-Element-PSI/data/bathymetry_copernicus.nc'"
+    ],
+    "timing_s": 0.0
+  }
+}
