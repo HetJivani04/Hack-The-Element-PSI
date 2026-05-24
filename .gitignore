@@ -46,3 +46,4 @@ data/
 # --- Output files ---
 output/
 *.log
+*.mov
