@@ -1,117 +1,196 @@
+import { useState } from 'react'
 import { useSimulationStore } from '../../store/simulationStore'
 
 export default function TurbineSpecPanel() {
-  const specs = useSimulationStore(state => state.turbineSpecs)
-  const setSpecs = useSimulationStore(state => state.setTurbineSpecs)
-  const windmillType = useSimulationStore(state => state.windmillType)
+  const [isOpen, setIsOpen] = useState(false)
+  
+  const manualLat = useSimulationStore(state => state.manualLat)
+  const manualLon = useSimulationStore(state => state.manualLon)
+  const setManualLat = useSimulationStore(state => state.setManualLat)
+  const setManualLon = useSimulationStore(state => state.setManualLon)
+  const applyManualCoords = useSimulationStore(state => state.applyManualCoords)
+
   const windmillPos = useSimulationStore(state => state.windmillPosition)
-  const setWindmillPos = useSimulationStore(state => state.setWindmillPosition)
+  const windmillType = useSimulationStore(state => state.windmillType)
+  const setWindmillType = useSimulationStore(state => state.setWindmillType)
+  const turbineSpecs = useSimulationStore(state => state.turbineSpecs)
+  const setTurbineSpecs = useSimulationStore(state => state.setTurbineSpecs)
 
-  const handleLatChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const lat = parseFloat(e.target.value)
-    if (!isNaN(lat)) {
-      setWindmillPos({ lat, lon: windmillPos?.lon ?? -63.0 })
-    }
-  }
-
-  const handleLonChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const lon = parseFloat(e.target.value)
-    if (!isNaN(lon)) {
-      setWindmillPos({ lat: windmillPos?.lat ?? 44.0, lon })
-    }
+  if (!isOpen) {
+    return (
+      <div 
+        className="relative bg-white border border-outline-variant rounded-xl p-stack-sm flex items-center gap-2 cursor-pointer shadow-md hover:bg-[#f5f5f5] transition-colors w-full"
+        onClick={() => setIsOpen(true)}
+      >
+        <span className="material-symbols-outlined text-tertiary">wind_power</span>
+        <span className="font-label-md text-label-md text-on-surface font-semibold flex-1">Turbine & Location</span>
+        {windmillPos && (
+          <span className="material-symbols-outlined text-green-600 text-[18px]">check_circle</span>
+        )}
+      </div>
+    )
   }
 
   return (
-    <div className="absolute top-[480px] left-stack-md w-[320px] bg-surface/90 backdrop-blur-md border border-outline-variant rounded-xl p-stack-md flex flex-col gap-stack-md shadow-sm z-20">
-      <div className="flex items-center justify-between border-b border-outline-variant pb-stack-sm">
-        <h3 className="font-headline-sm text-headline-sm font-semibold text-on-surface flex items-center gap-2">
-          <span className="material-symbols-outlined text-secondary">wind_power</span>
-          Turbine Specs
-        </h3>
-        <span className="px-2 py-1 bg-surface-container-high rounded text-label-sm font-label-sm text-on-surface-variant uppercase">
-          {windmillType}
-        </span>
-      </div>
+    <div className="relative w-full flex flex-col bg-white border border-outline-variant rounded-xl shadow-xl overflow-hidden transition-all duration-200">
       
-      <div className="flex flex-col gap-stack-sm pt-2">
-        {/* Location Input Section */}
-        <div className="flex flex-col gap-1 pb-2 border-b border-outline-variant">
-          <label className="font-label-sm text-label-sm text-on-surface">Location (Lat, Lon)</label>
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-outline-variant p-stack-md bg-white">
+        <h3 className="font-headline-sm text-headline-sm font-semibold text-on-surface flex items-center gap-2">
+          <span className="material-symbols-outlined text-tertiary">wind_power</span>
+          Turbine & Location
+        </h3>
+        <button onClick={() => setIsOpen(false)} className="text-on-surface-variant hover:text-on-surface">
+          <span className="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div className="max-h-[500px] overflow-y-auto custom-scrollbar p-stack-md flex flex-col gap-stack-md">
+        
+        {/* Placement Section */}
+        <div className="flex flex-col gap-2">
+          <h4 className="font-label-sm text-primary uppercase tracking-wider border-b border-outline-variant/50 pb-1">Placement</h4>
+          <p className="text-body-sm text-on-surface-variant">Use the "Pin" tool above or enter coordinates manually.</p>
           <div className="flex gap-2">
-            <input 
-              type="number"
-              step="0.01"
-              value={windmillPos?.lat ?? ''}
-              onChange={handleLatChange}
-              placeholder="Latitude"
-              className="w-1/2 bg-surface-container-low border border-outline-variant text-on-surface font-body-sm text-body-sm py-1 px-2 rounded focus:outline-none focus:border-secondary transition-all"
-            />
-            <input 
-              type="number"
-              step="0.01"
-              value={windmillPos?.lon ?? ''}
-              onChange={handleLonChange}
-              placeholder="Longitude"
-              className="w-1/2 bg-surface-container-low border border-outline-variant text-on-surface font-body-sm text-body-sm py-1 px-2 rounded focus:outline-none focus:border-secondary transition-all"
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <div className="flex justify-between items-end">
-            <label className="font-label-sm text-label-sm text-on-surface">Hub Height (m)</label>
-            <span className="font-label-sm text-label-sm text-on-surface-variant font-mono">{specs.hubHeight}</span>
-          </div>
-          <input 
-            className="w-full h-1 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-secondary" 
-            type="range" min="80" max="250" 
-            value={specs.hubHeight} 
-            onChange={e => setSpecs({ hubHeight: Number(e.target.value) })}
-          />
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <div className="flex justify-between items-end">
-            <label className="font-label-sm text-label-sm text-on-surface">Rotor Diameter (m)</label>
-            <span className="font-label-sm text-label-sm text-on-surface-variant font-mono">{specs.rotorDiameter}</span>
-          </div>
-          <input 
-            className="w-full h-1 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-secondary" 
-            type="range" min="100" max="300" 
-            value={specs.rotorDiameter} 
-            onChange={e => setSpecs({ rotorDiameter: Number(e.target.value) })}
-          />
-        </div>
-
-        {windmillType === 'floating' && (
-          <>
-            <div className="flex flex-col gap-1">
-              <div className="flex justify-between items-end">
-                <label className="font-label-sm text-label-sm text-on-surface">Floater Radius (m)</label>
-                <span className="font-label-sm text-label-sm text-on-surface-variant font-mono">{specs.floaterRadius}</span>
-              </div>
+            <div className="flex flex-col flex-1 gap-1">
+              <label className="font-label-sm text-label-sm text-on-surface-variant">Latitude °N</label>
               <input 
-                className="w-full h-1 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-secondary" 
-                type="range" min="20" max="80" 
-                value={specs.floaterRadius} 
-                onChange={e => setSpecs({ floaterRadius: Number(e.target.value) })}
+                type="text" 
+                className="bg-surface-variant border border-outline-variant rounded-DEFAULT px-3 py-2 text-on-surface font-body-md w-full focus:outline-none focus:border-primary"
+                value={manualLat}
+                onChange={(e) => setManualLat(e.target.value)}
+                onBlur={applyManualCoords}
+                onKeyDown={(e) => e.key === 'Enter' && applyManualCoords()}
+                placeholder="e.g. 44.1"
               />
             </div>
-          </>
-        )}
-
-        <div className="flex flex-col gap-1 mt-2">
-          <label className="font-label-sm text-label-sm text-on-surface">Material Grade</label>
-          <select 
-            value={specs.materialGrade}
-            onChange={e => setSpecs({ materialGrade: e.target.value })}
-            className="w-full bg-surface-container-low border border-outline-variant text-on-surface font-body-sm text-body-sm py-2 px-2 rounded focus:outline-none focus:border-secondary transition-all cursor-pointer"
-          >
-            <option value="s355">S355 Structural Steel</option>
-            <option value="s420">S420 High Strength</option>
-            <option value="s460">S460 Ultra High Strength</option>
-          </select>
+            <div className="flex flex-col flex-1 gap-1">
+              <label className="font-label-sm text-label-sm text-on-surface-variant">Longitude °W</label>
+              <input 
+                type="text" 
+                className="bg-surface-variant border border-outline-variant rounded-DEFAULT px-3 py-2 text-on-surface font-body-md w-full focus:outline-none focus:border-primary"
+                value={manualLon}
+                onChange={(e) => setManualLon(e.target.value)}
+                onBlur={applyManualCoords}
+                onKeyDown={(e) => e.key === 'Enter' && applyManualCoords()}
+                placeholder="e.g. -63.2"
+              />
+            </div>
+          </div>
         </div>
+
+        {/* Technical Specs Section */}
+        <div className="flex flex-col gap-3 mt-2">
+          <h4 className="font-label-sm text-primary uppercase tracking-wider border-b border-outline-variant/50 pb-1">Technical Specs</h4>
+          
+          <div className="flex flex-col gap-1">
+            <label className="font-label-sm text-label-sm text-on-surface-variant">Turbine Model</label>
+            <input 
+              type="text" 
+              className="bg-surface-variant border border-outline-variant rounded-DEFAULT px-3 py-1 text-on-surface font-body-md w-full"
+              value={turbineSpecs.model}
+              onChange={(e) => setTurbineSpecs({ model: e.target.value })}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-col gap-1">
+              <label className="font-label-sm text-label-sm text-on-surface-variant">Rated Power (MW)</label>
+              <input 
+                type="number" 
+                className="bg-surface-variant border border-outline-variant rounded-DEFAULT px-3 py-1 text-on-surface font-body-md w-full"
+                value={turbineSpecs.ratedPower}
+                onChange={(e) => setTurbineSpecs({ ratedPower: parseFloat(e.target.value) })}
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="font-label-sm text-label-sm text-on-surface-variant">Hub Height (m)</label>
+              <input 
+                type="number" 
+                className="bg-surface-variant border border-outline-variant rounded-DEFAULT px-3 py-1 text-on-surface font-body-md w-full"
+                value={turbineSpecs.hubHeight}
+                onChange={(e) => setTurbineSpecs({ hubHeight: parseFloat(e.target.value) })}
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="font-label-sm text-label-sm text-on-surface-variant">Rotor Dia (m)</label>
+              <input 
+                type="number" 
+                className="bg-surface-variant border border-outline-variant rounded-DEFAULT px-3 py-1 text-on-surface font-body-md w-full"
+                value={turbineSpecs.rotorDiameter}
+                onChange={(e) => setTurbineSpecs({ rotorDiameter: parseFloat(e.target.value) })}
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="font-label-sm text-label-sm text-on-surface-variant">Cut-in (m/s)</label>
+              <input 
+                type="number" 
+                className="bg-surface-variant border border-outline-variant rounded-DEFAULT px-3 py-1 text-on-surface font-body-md w-full"
+                value={turbineSpecs.cutInWindSpeed}
+                onChange={(e) => setTurbineSpecs({ cutInWindSpeed: parseFloat(e.target.value) })}
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="font-label-sm text-label-sm text-on-surface-variant">Rated (m/s)</label>
+              <input 
+                type="number" 
+                className="bg-surface-variant border border-outline-variant rounded-DEFAULT px-3 py-1 text-on-surface font-body-md w-full"
+                value={turbineSpecs.ratedWindSpeed}
+                onChange={(e) => setTurbineSpecs({ ratedWindSpeed: parseFloat(e.target.value) })}
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="font-label-sm text-label-sm text-on-surface-variant">Cut-out (m/s)</label>
+              <input 
+                type="number" 
+                className="bg-surface-variant border border-outline-variant rounded-DEFAULT px-3 py-1 text-on-surface font-body-md w-full"
+                value={turbineSpecs.cutOutWindSpeed}
+                onChange={(e) => setTurbineSpecs({ cutOutWindSpeed: parseFloat(e.target.value) })}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="font-label-sm text-label-sm text-on-surface-variant">Foundation Type</label>
+            <input 
+              type="text" 
+              className="bg-surface-variant border border-outline-variant rounded-DEFAULT px-3 py-1 text-on-surface font-body-md w-full"
+              value={turbineSpecs.foundationType}
+              onChange={(e) => setTurbineSpecs({ foundationType: e.target.value })}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="font-label-sm text-label-sm text-on-surface-variant">Export Cable</label>
+            <input 
+              type="text" 
+              className="bg-surface-variant border border-outline-variant rounded-DEFAULT px-3 py-1 text-on-surface font-body-md w-full"
+              value={turbineSpecs.exportCable}
+              onChange={(e) => setTurbineSpecs({ exportCable: e.target.value })}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="font-label-sm text-label-sm text-on-surface-variant">Power Coefficient (Cp)</label>
+            <input 
+              type="text" 
+              className="bg-surface-variant border border-outline-variant rounded-DEFAULT px-3 py-1 text-on-surface font-body-md w-full"
+              value={turbineSpecs.cpPowerCoefficient}
+              onChange={(e) => setTurbineSpecs({ cpPowerCoefficient: e.target.value })}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="font-label-sm text-label-sm text-on-surface-variant">Thrust Coefficient (Ct)</label>
+            <input 
+              type="text" 
+              className="bg-surface-variant border border-outline-variant rounded-DEFAULT px-3 py-1 text-on-surface font-body-md w-full"
+              value={turbineSpecs.ctThrustCoefficient}
+              onChange={(e) => setTurbineSpecs({ ctThrustCoefficient: e.target.value })}
+            />
+          </div>
+        </div>
+
       </div>
     </div>
   )

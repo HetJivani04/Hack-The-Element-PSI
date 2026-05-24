@@ -1,9 +1,7 @@
-
-import { useRegion, useSubmitJob } from '../../api/client'
+import { useSubmitJob } from '../../api/client'
 import { useSimulationStore } from '../../store/simulationStore'
 
 export default function TimeRangePanel() {
-  const { data: regionData } = useRegion()
   const timeRange = useSimulationStore(state => state.timeRange)
   const setTimeRange = useSimulationStore(state => state.setTimeRange)
   
@@ -30,51 +28,50 @@ export default function TimeRangePanel() {
     })
   }
 
-  // Extract years from region temporal coverage (fallback to 1993-2026)
-  const startYearBound = regionData ? new Date(regionData.temporal_coverage.earliest).getFullYear() : 1993
-  const endYearBound = regionData ? new Date(regionData.temporal_coverage.latest).getFullYear() : 2026
-
   return (
-    <div className="absolute bottom-stack-lg left-1/2 -translate-x-1/2 w-[600px] bg-surface/90 backdrop-blur-md border border-outline-variant rounded-xl p-stack-sm flex items-center justify-between shadow-sm z-20">
-      
-      <div className="flex-1 px-4 flex flex-col gap-1">
-        <div className="flex justify-between text-label-sm font-label-sm text-on-surface-variant">
-          <span>{startYearBound}</span>
-          <span className="text-primary font-semibold">{timeRange.startYear} - {timeRange.endYear}</span>
-          <span>{endYearBound}</span>
+    <div className="absolute bottom-stack-lg right-margin-desktop left-margin-desktop max-w-[900px] mx-auto bg-surface/90 backdrop-blur-md border border-outline-variant rounded-xl p-stack-sm flex items-center justify-between shadow-sm z-20">
+      <div className="flex justify-between items-center w-full">
+        <div className="flex gap-stack-md items-center">
+          <button className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface hover:text-primary hover:bg-surface-variant transition-colors">
+            <span className="material-symbols-outlined">play_arrow</span>
+          </button>
+          <div className="flex flex-col w-96 gap-1">
+            <input 
+              type="range" 
+              min={1993} 
+              max={2026} 
+              value={timeRange.startYear}
+              onChange={(e) => setTimeRange({ startYear: Number(e.target.value), endYear: timeRange.endYear })}
+              className="w-full h-1 bg-surface-variant rounded-full appearance-none cursor-pointer accent-primary"
+            />
+            <div className="flex justify-between font-label-sm text-[10px] text-on-surface-variant font-mono mt-1">
+              <span>1993</span>
+              <span className="text-primary">Year: {timeRange.startYear}</span>
+              <span>2026</span>
+            </div>
+          </div>
         </div>
         
-        {/* Simple single slider for now, ideally this would be a dual-thumb range slider */}
-        <input 
-          type="range" 
-          min={startYearBound} 
-          max={endYearBound} 
-          value={timeRange.startYear}
-          onChange={(e) => setTimeRange({ startYear: Number(e.target.value), endYear: timeRange.endYear })}
-          className="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary"
-        />
-        
-        <div className="flex justify-between text-[10px] text-on-surface-variant uppercase mt-1">
-          <span>Reanalysis</span>
-          <span className="w-1 h-3 bg-outline-variant relative -top-3"></span>
-          <span>Near Real-Time</span>
+        <div className="flex gap-stack-sm items-center">
+          <span className="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-[11px] flex items-center gap-1 border border-secondary/20">
+            <span className="w-2 h-2 rounded-full bg-secondary"></span> Live Telemetry
+          </span>
+          <span className="px-3 py-1 bg-surface-container-low text-on-surface-variant rounded-full font-label-sm text-[11px] border border-outline-variant">
+            Grid: Hexagonal
+          </span>
+          <button 
+            onClick={handleSubmit}
+            disabled={!canSubmit || submitJob.isPending}
+            className={`ml-2 px-6 py-2 rounded-full font-label-sm text-[12px] font-bold transition-all ${
+              canSubmit && !submitJob.isPending
+                ? 'bg-primary text-on-primary hover:bg-primary/90 shadow-md' 
+                : 'bg-surface-variant text-on-surface-variant opacity-50 cursor-not-allowed'
+            }`}
+          >
+            {submitJob.isPending ? 'Submitting...' : 'Run Simulation'}
+          </button>
         </div>
       </div>
-      
-      <div className="border-l border-outline-variant pl-4 py-1">
-        <button 
-          onClick={handleSubmit}
-          disabled={!canSubmit || submitJob.isPending}
-          className={`px-6 py-2 rounded-full font-label-lg font-bold transition-all ${
-            canSubmit && !submitJob.isPending
-              ? 'bg-primary text-on-primary hover:bg-primary/90 shadow-md' 
-              : 'bg-surface-variant text-on-surface-variant opacity-50 cursor-not-allowed'
-          }`}
-        >
-          {submitJob.isPending ? 'Submitting...' : 'Run Simulation'}
-        </button>
-      </div>
-      
     </div>
   )
 }
