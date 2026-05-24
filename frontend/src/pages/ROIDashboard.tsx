@@ -115,7 +115,7 @@ export default function ROIDashboard() {
       tooltip: {
         backgroundColor: 'rgba(27, 28, 28, 0.9)',
         callbacks: {
-          label: function(context: any) {
+          label: function(context: { label: string; parsed: number }) {
             return ' ' + context.label + ': ' + context.parsed + '%';
           }
         }

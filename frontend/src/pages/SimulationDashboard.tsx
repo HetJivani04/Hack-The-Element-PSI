@@ -1,71 +1,103 @@
+import { Viewer, Camera, Entity, PointGraphics } from 'resium'
+import { Cartesian3, Color } from 'cesium'
+import VariableSelectorPanel from '../components/panels/VariableSelectorPanel'
+import AnalysisMethodsPanel from '../components/panels/AnalysisMethodsPanel'
+import TurbineSpecPanel from '../components/panels/TurbineSpecPanel'
+import TimeRangePanel from '../components/panels/TimeRangePanel'
+import { useSimulationStore } from '../store/simulationStore'
+import { useJobStatus } from '../api/client'
+
 export default function SimulationDashboard() {
+  const windmillPos = useSimulationStore(state => state.windmillPosition)
+  const setWindmillPos = useSimulationStore(state => state.setWindmillPosition)
+  const currentJobId = useSimulationStore(state => state.currentJobId)
+  
+  const { data: jobStatus } = useJobStatus(currentJobId)
+
+  // Map Click Handler for placing the windmill
+  const handleMapClick = (_movement: unknown) => {
+    // In a real implementation we would pick the ellipsoid and convert to cartographic lat/lon
+    // For now we will mock the location on click so the UI can proceed
+    setWindmillPos({ lat: 44.1, lon: -63.2 }) 
+  }
+
   return (
-    <>
-      <div className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat z-0" data-alt="A highly detailed, technical, high-fidelity 3D visualization of Earth" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAsinrt6Kbncl5bK628Fdogyfgr0tpH2q2i0F3-ozleOZPCYmLWJ1RXFm7ai4rVSsuXl9IptJmPm8-DQmfnnpGTRP0G0yM1Lile8wJqgkVnLtlkFc9P0KddcHsePp7lZjtmhPjnx0CBoZPH3v2t9GE8Zrzkk18cCuc51pF8qrU5I2ouGkHYHhBImVyrXGzPaBKdDglKwUknbaMDn35XrcY9pOL4kk2xu2J6GNeCj2n2mhI7T3Fk4peiyopr4ucrEsxa7bgspzEtPZuP')"}}>
-        <div className="absolute inset-0 bg-background/20 backdrop-blur-[2px]"></div>
-      </div>
+    <div className="relative w-full h-screen overflow-hidden bg-black">
       
-      <div className="absolute top-stack-lg right-margin-desktop w-[360px] bg-surface/90 backdrop-blur-md border border-outline-variant rounded-xl p-stack-md flex flex-col gap-stack-md shadow-sm z-20">
-        <div className="flex items-center justify-between border-b border-outline-variant pb-stack-sm">
-          <h3 className="font-headline-md text-headline-md font-semibold text-on-surface">Windmill Mechanics</h3>
-          <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">info</span>
+      {/* 3D Globe */}
+      <Viewer 
+        full 
+        timeline={false} 
+        animation={false} 
+        baseLayerPicker={false}
+        navigationHelpButton={false}
+        sceneModePicker={false}
+        homeButton={false}
+        geocoder={false}
+        infoBox={false}
+        selectionIndicator={false}
+        onClick={handleMapClick}
+      >
+        <Camera 
+          // Default view locked to Scotian Shelf
+          destination={Cartesian3.fromDegrees(-63.0, 44.0, 1500000)}
+        />
+        
+        {/* Draw Windmill Pin if set */}
+        {windmillPos && (
+          <Entity position={Cartesian3.fromDegrees(windmillPos.lon, windmillPos.lat)}>
+            <PointGraphics pixelSize={10} color={Color.RED} outlineColor={Color.WHITE} outlineWidth={2} />
+          </Entity>
+        )}
+      </Viewer>
+
+      {/* Floating UI Panels */}
+      <VariableSelectorPanel />
+      <AnalysisMethodsPanel />
+      <TurbineSpecPanel />
+      <TimeRangePanel />
+
+      {/* Job Progress Overlay */}
+      {jobStatus && (jobStatus.status === 'queued' || jobStatus.status === 'running') && (
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-surface p-8 rounded-2xl flex flex-col items-center gap-4 max-w-sm w-full text-center">
+             <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+             <h2 className="font-headline-md font-bold text-on-surface">Running Simulation</h2>
+             <p className="font-body-md text-on-surface-variant">
+               {jobStatus.status === 'queued' ? 'Queued...' : 'Computing trajectories...'}
+             </p>
+             {jobStatus.progress && (
+               <div className="w-full mt-4">
+                 <div className="flex justify-between text-label-sm mb-1">
+                   <span>{jobStatus.progress.percent}%</span>
+                 </div>
+                 <div className="w-full bg-surface-variant h-2 rounded-full overflow-hidden">
+                   <div className="bg-primary h-full" style={{ width: `${jobStatus.progress.percent}%` }}></div>
+                 </div>
+               </div>
+             )}
+          </div>
         </div>
-        <div className="flex flex-col gap-stack-md pt-stack-sm">
-          <div className="flex flex-col gap-unit">
-            <div className="flex justify-between items-end">
-              <label className="font-label-md text-label-md text-on-surface">Column Diameter</label>
-              <span className="font-label-sm text-label-sm text-on-surface-variant font-mono">12.5 m</span>
-            </div>
-            <input className="w-full h-1 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary" max="25" min="5" type="range" defaultValue="12.5"/>
-          </div>
-          <div className="flex flex-col gap-unit">
-            <div className="flex justify-between items-end">
-              <label className="font-label-md text-label-md text-on-surface">Floater Radius</label>
-              <span className="font-label-sm text-label-sm text-on-surface-variant font-mono">45.0 m</span>
-            </div>
-            <input className="w-full h-1 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary" max="80" min="20" type="range" defaultValue="45"/>
-          </div>
-          <div className="flex flex-col gap-unit mt-stack-sm">
-            <label className="font-label-md text-label-md text-on-surface">Material Grade</label>
-            <select className="w-full bg-transparent border-b border-outline-variant text-on-surface font-body-md text-body-md py-2 focus:outline-none focus:border-primary focus:border-b-2 transition-all cursor-pointer">
-              <option value="s355">S355 Structural Steel</option>
-              <option value="s420">S420 High Strength</option>
-              <option value="s460">S460 Ultra High Strength</option>
-            </select>
-          </div>
-          <div className="grid grid-cols-2 gap-stack-sm mt-stack-sm">
-            <div className="bg-surface-container-low border border-outline-variant rounded-lg p-3 flex flex-col gap-1">
-              <span className="font-label-sm text-label-sm text-on-surface-variant">Est. Fatigue Life</span>
-              <span className="font-headline-md text-headline-md text-primary">24.5<span className="text-label-sm">yrs</span></span>
-            </div>
-            <div className="bg-surface-container-low border border-outline-variant rounded-lg p-3 flex flex-col gap-1">
-              <span className="font-label-sm text-label-sm text-on-surface-variant">Displacement</span>
-              <span className="font-headline-md text-headline-md text-on-surface">14.2<span className="text-label-sm">kt</span></span>
-            </div>
-          </div>
+      )}
+
+      {/* Job Complete Overlay (Mock transition to Results) */}
+      {jobStatus?.status === 'completed' && (
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+           <div className="bg-surface p-8 rounded-2xl flex flex-col items-center gap-4 max-w-sm w-full text-center">
+             <span className="material-symbols-outlined text-green-500 text-5xl">check_circle</span>
+             <h2 className="font-headline-md font-bold text-on-surface">Simulation Complete!</h2>
+             <p className="font-body-md text-on-surface-variant">
+               Trajectories and density maps have been computed.
+             </p>
+             <button 
+               className="mt-4 px-6 py-2 bg-primary text-on-primary rounded-full font-bold"
+               onClick={() => window.location.hash = '#/results'} // Just a mock action
+             >
+               View Results
+             </button>
+           </div>
         </div>
-      </div>
-      
-      <div className="absolute bottom-stack-lg right-margin-desktop left-margin-desktop max-w-[800px] mx-auto bg-surface/90 backdrop-blur-md border border-outline-variant rounded-xl p-stack-sm flex items-center justify-between shadow-sm z-20">
-        <div className="flex gap-stack-md items-center">
-          <button className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface hover:text-primary hover:bg-surface-variant transition-colors">
-            <span className="material-symbols-outlined">play_arrow</span>
-          </button>
-          <div className="h-1 w-64 bg-surface-variant rounded-full overflow-hidden">
-            <div className="h-full bg-primary w-1/3 rounded-full"></div>
-          </div>
-          <span className="font-label-sm text-label-sm text-on-surface-variant font-mono w-20">T+ 04:12:00</span>
-        </div>
-        <div className="flex gap-stack-sm">
-          <span className="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm flex items-center gap-1 border border-secondary/20">
-            <span className="w-2 h-2 rounded-full bg-secondary"></span>
-            Live Telemetry
-          </span>
-          <span className="px-3 py-1 bg-surface-container-low text-on-surface-variant rounded-full font-label-sm text-label-sm border border-outline-variant">
-            Grid: Hexagonal
-          </span>
-        </div>
-      </div>
-    </>
-  );
+      )}
+    </div>
+  )
 }

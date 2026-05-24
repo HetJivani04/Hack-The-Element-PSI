@@ -1,73 +1,47 @@
-# React + TypeScript + Vite
+# Offshore Wind Simulation Platform - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This directory contains the React-based frontend for the Offshore Wind Simulation Platform, built with Vite, TypeScript, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## Work Completed (Phases 1 & 2)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+We have successfully built an interactive 3D environment for planning and simulating offshore wind farms.
 
-## React Compiler
+1. **Core Setup**
+   - Initialized the project with React, Vite, and TypeScript.
+   - Configured Tailwind CSS for utility-first styling alongside standard design tokens.
+   - Set up `react-router-dom` for navigating between different views (e.g., the primary Dashboard and ROI Dashboard).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+2. **State Management & Data Fetching**
+   - Built a global state store using **Zustand** (`simulationStore.ts`) to keep the floating UI panels and the 3D globe perfectly in sync.
+   - Integrated **React Query** (`@tanstack/react-query`) in `api/client.ts` to manage fetching, caching, and polling data from the Python FastAPI backend.
 
-## Expanding the ESLint configuration
+3. **3D Globe Integration**
+   - Integrated **CesiumJS** via the `resium` React wrapper (`SimulationDashboard.tsx`).
+   - Configured the camera to default to the Scotian Shelf region.
+   - Implemented map click interactions to drop a turbine pin (fetching coordinates).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+4. **Interactive Floating Panels**
+   Built four major configuration panels that float over the 3D map:
+   - **VariableSelectorPanel**: Fetches and groups relevant environmental variables (Physics, Waves, Atmosphere).
+   - **AnalysisMethodsPanel**: Dynamically renders configuration sliders and inputs based on the selected tool's JSON schema returned from the backend.
+   - **TurbineSpecPanel**: Allows tweaking of physical parameters like Hub Height, Rotor Diameter, and Material Grade.
+   - **TimeRangePanel**: Uses the temporal bounds from the backend to set the simulation timeframe and trigger the API job submission.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+5. **End-to-End Simulation Flow**
+   - Clicking "Run Simulation" fires a POST request to the backend.
+   - Displays a dynamic loading overlay.
+   - Polls the backend for progress until the simulation returns `completed`.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Running Locally
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. **Start the Development Server**
+   ```bash
+   npm run dev
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+   The UI will be available at `http://localhost:5173` (or `5174` if port is in use). Ensure the backend server is running on `127.0.0.1:8000` so that the React Query hooks can successfully fetch the mock API data.
