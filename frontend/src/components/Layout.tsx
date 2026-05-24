@@ -11,6 +11,7 @@ export default function Layout() {
           </div>
           <nav className="hidden md:flex gap-stack-lg items-center">
             <Link to="/" className="text-primary border-b-2 border-primary font-bold pb-1 font-label-md text-label-md hover:bg-surface-container-high rounded-t-lg transition-colors px-2 pt-2">Dashboard</Link>
+            <Link to="/jobs" className="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md hover:bg-surface-container-high rounded-lg px-2 py-2">Jobs</Link>
             <Link to="/results" className="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md hover:bg-surface-container-high rounded-lg px-2 py-2">Analytics</Link>
             <Link to="/roi" className="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md hover:bg-surface-container-high rounded-lg px-2 py-2">Reports</Link>
           </nav>

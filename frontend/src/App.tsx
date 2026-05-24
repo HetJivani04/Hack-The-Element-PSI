@@ -4,6 +4,7 @@ import Layout from './components/Layout'
 import SimulationDashboard from './pages/SimulationDashboard'
 import ImpactAnalysis from './pages/ImpactAnalysis'
 import ROIDashboard from './pages/ROIDashboard'
+import JobManagementDashboard from './pages/JobManagementDashboard'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route index element={<SimulationDashboard />} />
           <Route path="results" element={<ImpactAnalysis />} />
           <Route path="roi" element={<ROIDashboard />} />
+          <Route path="jobs" element={<JobManagementDashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>
