@@ -46,7 +46,7 @@ export default function AnalysisMethodsPanel() {
         </button>
       </div>
 
-      <div className="max-h-[400px] overflow-y-auto custom-scrollbar p-stack-md flex flex-col gap-stack-sm">
+      <div className="p-stack-md flex flex-col gap-stack-sm">
         {availableTools.map(tool => {
           const isSelected = selectedTools.includes(tool.id)
           return (

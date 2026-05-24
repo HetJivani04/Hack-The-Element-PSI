@@ -286,7 +286,7 @@ export default function VariableSelectorPanel() {
         </button>
       </div>
 
-      <div className="max-h-[400px] overflow-y-auto custom-scrollbar p-4 flex flex-col gap-4">
+      <div className="p-4 flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           {mockGroups.map((group) => (
             <details key={group.id} className="group/section" open={group.id === 'physics_3d'}>

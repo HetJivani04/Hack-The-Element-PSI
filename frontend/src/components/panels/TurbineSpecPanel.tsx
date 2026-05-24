@@ -45,7 +45,7 @@ export default function TurbineSpecPanel() {
         </button>
       </div>
 
-      <div className="max-h-[500px] overflow-y-auto custom-scrollbar p-stack-md flex flex-col gap-stack-md">
+      <div className="p-stack-md flex flex-col gap-stack-md">
         
         {/* Placement Section */}
         <div className="flex flex-col gap-2">

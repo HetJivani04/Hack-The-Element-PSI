@@ -38,47 +38,25 @@ export default function RegionPanel() {
         <div className="flex items-center gap-2 mb-2">
           <span className="material-symbols-outlined text-primary">info</span>
           <p className="text-body-sm text-on-surface-variant">
-            Use the "Bounds" tool in the map tools above to click and drag a bounding box on the map.
+            Use the "Bounds" tool to click exactly 4 points on the map to define an arbitrary polygon environment.
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-stack-md">
-          <div className="flex flex-col gap-1">
-            <label className="font-label-sm text-label-sm text-on-surface-variant">SW Lat (°N)</label>
-            <input 
-              className="bg-surface-variant border-none rounded-DEFAULT px-3 py-2 text-on-surface font-body-md"
-              type="text" 
-              readOnly 
-              value={regionBounds?.southwest.lat.toFixed(4) || '---'} 
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="font-label-sm text-label-sm text-on-surface-variant">SW Lon (°W)</label>
-            <input 
-              className="bg-surface-variant border-none rounded-DEFAULT px-3 py-2 text-on-surface font-body-md"
-              type="text" 
-              readOnly 
-              value={regionBounds?.southwest.lon.toFixed(4) || '---'} 
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="font-label-sm text-label-sm text-on-surface-variant">NE Lat (°N)</label>
-            <input 
-              className="bg-surface-variant border-none rounded-DEFAULT px-3 py-2 text-on-surface font-body-md"
-              type="text" 
-              readOnly 
-              value={regionBounds?.northeast.lat.toFixed(4) || '---'} 
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="font-label-sm text-label-sm text-on-surface-variant">NE Lon (°W)</label>
-            <input 
-              className="bg-surface-variant border-none rounded-DEFAULT px-3 py-2 text-on-surface font-body-md"
-              type="text" 
-              readOnly 
-              value={regionBounds?.northeast.lon.toFixed(4) || '---'} 
-            />
-          </div>
+          {[1, 2, 3, 4].map(idx => {
+            const pt = regionBounds && regionBounds[idx - 1]
+            return (
+              <div key={idx} className="flex flex-col gap-1">
+                <label className="font-label-sm text-label-sm text-on-surface-variant">Point {idx}</label>
+                <input 
+                  className="bg-surface-variant border-none rounded-DEFAULT px-3 py-2 text-on-surface font-body-md"
+                  type="text" 
+                  readOnly 
+                  value={pt ? `${pt.lat.toFixed(3)}°, ${pt.lon.toFixed(3)}°` : '---'} 
+                />
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>

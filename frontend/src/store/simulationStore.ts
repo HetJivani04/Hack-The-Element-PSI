@@ -109,10 +109,7 @@
 
 import { create } from 'zustand'
 
-export interface RegionBounds {
-  southwest: { lat: number, lon: number }
-  northeast: { lat: number, lon: number }
-}
+export type RegionPolygon = { lat: number, lon: number }[]
 
 export interface WindmillPosition {
   lat: number
@@ -168,8 +165,8 @@ export interface MethodParams {
 
 interface SimulationState {
   // Region Selection
-  regionBounds: RegionBounds | null
-  setRegionBounds: (bounds: RegionBounds | null) => void
+  regionBounds: RegionPolygon | null
+  setRegionBounds: (bounds: RegionPolygon | null) => void
 
   // Windmill Placement
   windmillPosition: WindmillPosition | null
@@ -187,8 +184,8 @@ interface SimulationState {
   // Map Interactive Tools
   activeMapTool: 'bounds' | 'pin' | null
   setActiveMapTool: (tool: 'bounds' | 'pin' | null) => void
-  boundsDrawingState: { corner1: { lat: number, lon: number } | null }
-  setBoundsDrawingState: (state: { corner1: { lat: number, lon: number } | null }) => void
+  boundsDrawingState: { points: { lat: number, lon: number }[] }
+  setBoundsDrawingState: (state: { points: { lat: number, lon: number }[] }) => void
 
   // Floating Panel A: Variables
   selectedVariables: string[]
@@ -332,7 +329,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
 
   activeMapTool: null,
   setActiveMapTool: (tool) => set({ activeMapTool: tool }),
-  boundsDrawingState: { corner1: null },
+  boundsDrawingState: { points: [] },
   setBoundsDrawingState: (state) => set({ boundsDrawingState: state }),
 
   selectedVariables: [],

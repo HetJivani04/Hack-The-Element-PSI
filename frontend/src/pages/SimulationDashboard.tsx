@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Viewer, CameraFlyTo, Entity, PointGraphics, PolygonGraphics, type CesiumComponentRef } from 'resium'
+import { Viewer, CameraFlyTo, Entity, PointGraphics, PolygonGraphics, PolylineGraphics, type CesiumComponentRef } from 'resium'
 import { Cartesian3, Cartesian2, Color, type Viewer as CesiumViewer, Cartographic, Math as CesiumMath } from 'cesium'
 import VariableSelectorPanel from '../components/panels/VariableSelectorPanel'
 import AnalysisMethodsPanel from '../components/panels/AnalysisMethodsPanel'
@@ -47,20 +47,13 @@ export default function SimulationDashboard() {
       setManualLon(lon.toFixed(3))
       setActiveMapTool(null)
     } else if (activeMapTool === 'bounds') {
-      if (!boundsDrawingState.corner1) {
-        setBoundsDrawingState({ corner1: { lat, lon } })
-      } else {
-        const c1 = boundsDrawingState.corner1
-        const swLat = Math.min(c1.lat, lat)
-        const neLat = Math.max(c1.lat, lat)
-        const swLon = Math.min(c1.lon, lon)
-        const neLon = Math.max(c1.lon, lon)
-        setRegionBounds({
-          southwest: { lat: swLat, lon: swLon },
-          northeast: { lat: neLat, lon: neLon }
-        })
-        setBoundsDrawingState({ corner1: null })
+      const newPoints = [...boundsDrawingState.points, { lat, lon }]
+      if (newPoints.length === 4) {
+        setRegionBounds(newPoints)
+        setBoundsDrawingState({ points: [] })
         setActiveMapTool(null)
+      } else {
+        setBoundsDrawingState({ points: newPoints })
       }
     }
   }
@@ -69,7 +62,24 @@ export default function SimulationDashboard() {
     <div className="relative w-full h-full overflow-hidden bg-background text-on-background flex flex-col font-body-md text-body-md antialiased">
       {/* Main Content Area */}
       <div className="flex flex-1 relative overflow-hidden">
-        <main className={`h-full relative bg-surface flex-1 w-full ${activeMapTool ? 'cursor-crosshair' : ''}`}>
+        
+        {/* Left Side Pane */}
+        <div className="w-[400px] h-full bg-surface border-r border-outline-variant flex flex-col z-40 flex-shrink-0 overflow-y-auto custom-scrollbar">
+          <div className="p-4 border-b border-outline-variant bg-surface-container-low flex-shrink-0">
+            <h2 className="font-headline-sm font-bold text-on-surface">Simulation Setup</h2>
+            <p className="text-body-sm text-on-surface-variant">Configure environment and turbine parameters</p>
+          </div>
+          
+          <div className="flex-1 p-4 flex flex-col gap-4 bg-surface-container-lowest">
+            <VariableSelectorPanel />
+            <AnalysisMethodsPanel />
+            <RegionPanel />
+            <TurbineSpecPanel />
+          </div>
+        </div>
+
+        {/* Map Area */}
+        <main className={`h-full relative bg-surface flex-1 ${activeMapTool ? 'cursor-crosshair' : ''}`}>
           
           {/* 3D Globe */}
           <Viewer 
@@ -104,9 +114,9 @@ export default function SimulationDashboard() {
               </Entity>
             )}
 
-            {/* Draw current first corner of boundary box if drawing */}
-            {boundsDrawingState.corner1 && (
-              <Entity position={Cartesian3.fromDegrees(boundsDrawingState.corner1.lon, boundsDrawingState.corner1.lat)}>
+            {/* Draw current boundary points if drawing */}
+            {boundsDrawingState.points.map((p, idx) => (
+              <Entity key={idx} position={Cartesian3.fromDegrees(p.lon, p.lat)}>
                 <PointGraphics
                   pixelSize={8}
                   color={Color.RED}
@@ -114,18 +124,28 @@ export default function SimulationDashboard() {
                   outlineWidth={2}
                 />
               </Entity>
+            ))}
+
+            {/* Draw lines connecting drawing points */}
+            {boundsDrawingState.points.length > 1 && (
+              <Entity>
+                <PolylineGraphics
+                  positions={Cartesian3.fromDegreesArray(
+                    boundsDrawingState.points.flatMap(p => [p.lon, p.lat])
+                  )}
+                  width={2}
+                  material={Color.RED.withAlpha(0.8)}
+                />
+              </Entity>
             )}
 
-            {/* Draw Boundary Box */}
-            {regionBounds && (
+            {/* Draw Completed Polygon Box */}
+            {regionBounds && regionBounds.length === 4 && (
               <Entity>
                 <PolygonGraphics
-                  hierarchy={Cartesian3.fromDegreesArray([
-                    regionBounds.southwest.lon, regionBounds.southwest.lat,
-                    regionBounds.northeast.lon, regionBounds.southwest.lat,
-                    regionBounds.northeast.lon, regionBounds.northeast.lat,
-                    regionBounds.southwest.lon, regionBounds.northeast.lat,
-                  ])}
+                  hierarchy={Cartesian3.fromDegreesArray(
+                    regionBounds.flatMap(p => [p.lon, p.lat])
+                  )}
                   material={Color.RED.withAlpha(0.2)}
                   outline={true}
                   outlineColor={Color.RED}
@@ -135,24 +155,9 @@ export default function SimulationDashboard() {
             )}
           </Viewer>
 
-          {/* Map Overlays Wrapper */}
-          <div className="absolute top-[80px] right-6 z-30 flex flex-col gap-3 w-[360px] max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar pointer-events-none">
-            {/* The child panels need to enable pointer-events-auto */}
-            <div className="pointer-events-auto w-full flex justify-end">
-              <MapToolsPanel />
-            </div>
-            <div className="pointer-events-auto w-full">
-              <VariableSelectorPanel />
-            </div>
-            <div className="pointer-events-auto w-full">
-              <AnalysisMethodsPanel />
-            </div>
-            <div className="pointer-events-auto w-full">
-              <RegionPanel />
-            </div>
-            <div className="pointer-events-auto w-full">
-              <TurbineSpecPanel />
-            </div>
+          {/* Map Tools Floating on Top Right */}
+          <div className="absolute top-[20px] right-[20px] z-30 pointer-events-auto">
+            <MapToolsPanel />
           </div>
 
           {/* Bottom Time Controller */}
