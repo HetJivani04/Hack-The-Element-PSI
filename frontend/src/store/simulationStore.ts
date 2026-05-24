@@ -232,6 +232,8 @@ interface SimulationState {
   // Job Status
   currentJobId: string | null
   setCurrentJobId: (id: string | null) => void
+  selectedJobId: string | null
+  setSelectedJobId: (id: string | null) => void
 }
 
 const DEFAULT_GROUNDED_SPECS = {
@@ -382,4 +384,6 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
 
   currentJobId: null,
   setCurrentJobId: (id) => set({ currentJobId: id }),
+  selectedJobId: null,
+  setSelectedJobId: (id) => set({ selectedJobId: id }),
 }))

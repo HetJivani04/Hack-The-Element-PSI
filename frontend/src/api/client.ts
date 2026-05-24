@@ -92,3 +92,37 @@ export const useJobStatus = (jobId: string | null, pollIntervalMs: number = 2000
     },
   })
 }
+
+export const fetchJobHistory = async () => {
+  const res = await fetch(`${API_BASE_URL}/api/jobs/history`)
+  if (!res.ok) throw new Error('Failed to fetch job history')
+  return res.json()
+}
+
+export const useJobHistory = () => {
+  return useQuery({
+    queryKey: ['jobHistory'],
+    queryFn: fetchJobHistory,
+    refetchInterval: (query) => {
+      // Auto-poll if any jobs are running or queued
+      const hasActive = Array.isArray(query.state.data) && query.state.data.some(
+        (j: any) => j.status === 'running' || j.status === 'queued'
+      )
+      return hasActive ? 3000 : false
+    }
+  })
+}
+
+export const fetchJobResult = async (jobId: string) => {
+  const res = await fetch(`${API_BASE_URL}/api/jobs/${jobId}/result`)
+  if (!res.ok) throw new Error('Failed to fetch job result')
+  return res.json()
+}
+
+export const useJobResult = (jobId: string | null) => {
+  return useQuery({
+    queryKey: ['jobResult', jobId],
+    queryFn: () => fetchJobResult(jobId!),
+    enabled: !!jobId,
+  })
+}

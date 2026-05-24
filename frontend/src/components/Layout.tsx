@@ -1,6 +1,41 @@
-import { Link, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useJobHistory } from '../api/client';
 
 export default function Layout() {
+  const navigate = useNavigate();
+  const { data: jobHistory } = useJobHistory();
+  const prevHistoryRef = useRef<any>(null);
+  
+  const [toasts, setToasts] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!jobHistory) return;
+    const currentJobs = Array.isArray(jobHistory) ? jobHistory : [];
+    const prevJobs = prevHistoryRef.current ? (Array.isArray(prevHistoryRef.current) ? prevHistoryRef.current : []) : [];
+    
+    const newCompleted = currentJobs.filter((job: any) => 
+      job.status === 'completed' && 
+      prevJobs.some((p: any) => p.job_id === job.job_id && (p.status === 'running' || p.status === 'queued'))
+    );
+
+    if (newCompleted.length > 0) {
+      newCompleted.forEach((job: any) => {
+        const id = Date.now() + Math.random();
+        setToasts(prev => [...prev, { id, title: `Simulation Complete`, message: `${job.description} finished.` }]);
+        setTimeout(() => {
+          setToasts(prev => prev.filter(t => t.id !== id));
+        }, 10000); // Hide after 10s
+      });
+    }
+
+    prevHistoryRef.current = currentJobs;
+  }, [jobHistory]);
+  const navClass = ({ isActive }: { isActive: boolean }) => 
+    isActive 
+      ? "text-primary border-b-2 border-primary font-bold pb-1 font-label-md text-label-md hover:bg-surface-container-high rounded-t-lg transition-colors px-2 pt-2"
+      : "text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md hover:bg-surface-container-high rounded-t-lg px-2 pt-2 pb-1 border-b-2 border-transparent";
+
   return (
     <div className="bg-background text-on-background h-screen overflow-hidden flex flex-col font-body-md text-body-md antialiased">
       <header className="bg-surface w-full z-50 sticky top-0 border-b border-outline-variant transition-all duration-200 ease-in-out">
@@ -9,11 +44,11 @@ export default function Layout() {
             <img alt="PSI Logo" className="h-10 w-auto rounded-DEFAULT border border-outline-variant object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkeyijhiZp8HshOwhKvfC5mUCwYK4AYu4zldyzxDyYia_RU4kBo1RlH7h2oKXhrXYcRX9MNk9zNFV3UNtIlsZJjmbeo5IjSf8sBXHjbghYGHOBMMOMqYwpSQbryCb-gxRX4wHEHcNAscTWWKgVagalcHKuJNpThaW25301xjazUgTt9wags0Xb38_ugIbwcPa1yiEegf7Tx56gx1D1RCA-ASjHt9qT2WwPq30dLtv9k4Moc-MlUjUazg6ERw1GGHIuV30m1gBl3KjQ"/>
             <span className="font-headline-lg text-headline-lg font-bold text-primary tracking-tight">PSI</span>
           </div>
-          <nav className="hidden md:flex gap-stack-lg items-center">
-            <Link to="/" className="text-primary border-b-2 border-primary font-bold pb-1 font-label-md text-label-md hover:bg-surface-container-high rounded-t-lg transition-colors px-2 pt-2">Dashboard</Link>
-            <Link to="/jobs" className="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md hover:bg-surface-container-high rounded-lg px-2 py-2">Jobs</Link>
-            <Link to="/results" className="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md hover:bg-surface-container-high rounded-lg px-2 py-2">Analytics</Link>
-            <Link to="/roi" className="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md hover:bg-surface-container-high rounded-lg px-2 py-2">Reports</Link>
+          <nav className="hidden md:flex gap-stack-lg items-center relative">
+            <NavLink to="/" className={navClass}>Dashboard</NavLink>
+            <NavLink to="/jobs" className={navClass}>Jobs</NavLink>
+            <NavLink to="/results" className={navClass}>Analytics</NavLink>
+            <NavLink to="/roi" className={navClass}>Reports</NavLink>
           </nav>
           <div className="flex items-center gap-0">
             <button className="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-full transition-all duration-200 ease-in-out">
@@ -30,6 +65,33 @@ export default function Layout() {
         <main className="w-full h-full relative bg-surface flex-1 overflow-y-auto">
           <Outlet />
         </main>
+      </div>
+      
+      {/* Global Toasts */}
+      <div className="fixed bottom-6 right-6 z-[999] flex flex-col gap-4 pointer-events-none">
+        {toasts.map(toast => (
+          <div key={toast.id} className="bg-surface border border-outline-variant shadow-xl rounded-xl p-4 w-80 flex gap-4 pointer-events-auto transition-all animate-in slide-in-from-bottom-5">
+             <button onClick={() => setToasts(prev => prev.filter(t => t.id !== toast.id))} className="absolute top-2 right-2 text-on-surface-variant hover:text-on-surface">
+               <span className="material-symbols-outlined text-sm">close</span>
+             </button>
+             <div className="text-green-500 mt-1">
+               <span className="material-symbols-outlined">check_circle</span>
+             </div>
+             <div>
+               <h3 className="font-bold text-on-surface font-headline-sm">{toast.title}</h3>
+               <p className="text-body-sm text-on-surface-variant mb-2">{toast.message}</p>
+               <button 
+                 onClick={() => {
+                   setToasts(prev => prev.filter(t => t.id !== toast.id));
+                   navigate('/results');
+                 }}
+                 className="text-primary font-bold text-label-sm hover:underline"
+               >
+                 View Results
+               </button>
+             </div>
+          </div>
+        ))}
       </div>
     </div>
   );

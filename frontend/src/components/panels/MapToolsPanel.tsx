@@ -35,6 +35,22 @@ export default function MapToolsPanel() {
         <span className="material-symbols-outlined text-[20px]">push_pin</span>
         <span className="text-[10px] font-label-sm">Pin</span>
       </button>
+
+      <div className="w-[1px] bg-outline-variant my-1" />
+
+      <button 
+        onClick={() => {
+          useSimulationStore.getState().setRegionBounds(null);
+          useSimulationStore.getState().setWindmillPosition(null);
+          useSimulationStore.getState().setBoundsDrawingState({ points: [] });
+          setActiveMapTool(null);
+        }}
+        className="p-2 rounded-lg flex flex-col items-center gap-1 transition-colors hover:bg-error/10 text-error border border-transparent"
+        title="Clear Map Selections"
+      >
+        <span className="material-symbols-outlined text-[20px]">delete</span>
+        <span className="text-[10px] font-label-sm">Clear</span>
+      </button>
     </div>
   )
 }

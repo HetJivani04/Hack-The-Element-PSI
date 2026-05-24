@@ -1,23 +1,45 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useMemo } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useJobHistory } from '../api/client'
+import { useSimulationStore } from '../store/simulationStore'
 
 interface JobData {
-  id: string
+  job_id: string
   description: string
   method: string
-  status: 'Running' | 'Completed' | 'Queued' | 'Failed'
-  startTime: string
-  duration: string
+  tool_id: string
+  status: 'running' | 'completed' | 'queued' | 'failed'
+  start_time: string
+  queued_at: string
+  runtime_seconds?: number
 }
 
-const mockJobs: JobData[] = [
-  { id: '#SIM-8842', description: 'Offshore Wind Farm Alpha', method: 'Fluid Dynamics', status: 'Running', startTime: 'Today, 08:42 AM', duration: '02:15:00' },
-  { id: '#SIM-8841', description: 'Zone 4B Salinity Analysis', method: 'MCMC', status: 'Completed', startTime: 'Yesterday, 14:20 PM', duration: '14:32:10' },
-  { id: '#SIM-8840', description: 'Turbine Array Stress Test', method: 'Fluid Dynamics', status: 'Queued', startTime: '-', duration: '-' },
-  { id: '#SIM-8839', description: 'Coastal Erosion Predictive Model', method: 'MCMC', status: 'Failed', startTime: 'Oct 24, 09:15 AM', duration: '00:45:12' },
-]
-
 export default function JobManagementDashboard() {
+  const { data: jobHistory, isLoading, isError } = useJobHistory()
+  const { setSelectedJobId } = useSimulationStore()
+  const navigate = useNavigate()
+
+  const jobs: JobData[] = useMemo(() => {
+    if (!jobHistory || !Array.isArray(jobHistory)) return []
+    // jobHistory is a list of JobData
+    return [...jobHistory].sort((a: JobData, b: JobData) => {
+      return new Date(b.queued_at).getTime() - new Date(a.queued_at).getTime()
+    })
+  }, [jobHistory])
+
+  const stats = useMemo(() => {
+    return {
+      running: jobs.filter(j => j.status === 'running').length,
+      queued: jobs.filter(j => j.status === 'queued').length,
+      completed: jobs.filter(j => j.status === 'completed').length,
+    }
+  }, [jobs])
+
+  const handleViewResult = (jobId: string) => {
+    setSelectedJobId(jobId)
+    navigate('/results')
+  }
+
   return (
     <div className="w-full min-h-full bg-background flex flex-col items-center">
       <div className="w-full max-w-[1400px] flex-1 flex flex-col p-8 gap-10">
@@ -35,7 +57,7 @@ export default function JobManagementDashboard() {
               <span className="material-symbols-outlined text-[20px]">sync</span>
               <span className="font-label-md font-bold tracking-wider">IN PROGRESS</span>
             </div>
-            <div className="text-6xl font-bold text-on-surface">12</div>
+            <div className="text-6xl font-bold text-on-surface">{stats.running}</div>
             <div className="text-body-sm text-on-surface-variant">Active computational clusters</div>
           </div>
           
@@ -44,7 +66,7 @@ export default function JobManagementDashboard() {
               <span className="material-symbols-outlined text-[20px]">hourglass_empty</span>
               <span className="font-label-md font-bold tracking-wider">QUEUED</span>
             </div>
-            <div className="text-6xl font-bold text-on-surface">45</div>
+            <div className="text-6xl font-bold text-on-surface">{stats.queued}</div>
             <div className="text-body-sm text-on-surface-variant">Awaiting resource allocation</div>
           </div>
 
@@ -53,8 +75,8 @@ export default function JobManagementDashboard() {
               <span className="material-symbols-outlined text-[20px] text-green-600">check_circle</span>
               <span className="font-label-md font-bold tracking-wider">COMPLETED</span>
             </div>
-            <div className="text-6xl font-bold text-on-surface">1,204</div>
-            <div className="text-body-sm text-on-surface-variant">Past 30 days</div>
+            <div className="text-6xl font-bold text-on-surface">{stats.completed}</div>
+            <div className="text-body-sm text-on-surface-variant">Total completed</div>
           </div>
         </div>
 
@@ -82,72 +104,94 @@ export default function JobManagementDashboard() {
 
         {/* Table Section */}
         <div className="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden mt-2">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-[#fcfcfc] border-b border-outline-variant text-on-surface-variant font-label-md">
-                  <th className="px-6 py-4 font-semibold whitespace-nowrap">Job ID</th>
-                  <th className="px-6 py-4 font-semibold whitespace-nowrap">Description</th>
-                  <th className="px-6 py-4 font-semibold whitespace-nowrap">Method</th>
-                  <th className="px-6 py-4 font-semibold whitespace-nowrap">Status</th>
-                  <th className="px-6 py-4 font-semibold whitespace-nowrap">Start Time</th>
-                  <th className="px-6 py-4 font-semibold whitespace-nowrap">Duration</th>
-                  <th className="px-6 py-4 font-semibold text-center whitespace-nowrap">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {mockJobs.map((job, idx) => (
-                  <tr key={idx} className="border-b border-outline-variant hover:bg-[#fafafa] transition-colors">
-                    <td className="px-6 py-4 font-bold text-on-surface whitespace-nowrap">{job.id}</td>
-                    <td className="px-6 py-4 text-on-surface whitespace-nowrap">{job.description}</td>
-                    <td className="px-6 py-4 text-on-surface-variant whitespace-nowrap">{job.method}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {job.status === 'Running' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
-                          Running
-                        </span>
-                      )}
-                      {job.status === 'Completed' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-bold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
-                          Completed
-                        </span>
-                      )}
-                      {job.status === 'Queued' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-200 text-gray-800 text-xs font-bold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
-                          Queued
-                        </span>
-                      )}
-                      {job.status === 'Failed' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 text-red-800 text-xs font-bold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
-                          Failed
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-on-surface-variant whitespace-nowrap">{job.startTime}</td>
-                    <td className="px-6 py-4 text-on-surface-variant whitespace-nowrap">{job.duration}</td>
-                    <td className="px-6 py-4 text-center whitespace-nowrap">
-                      <button className="text-on-surface-variant hover:text-on-surface rounded-full p-1 hover:bg-surface-container-high transition-colors">
-                        <span className="material-symbols-outlined text-[20px]">more_vert</span>
-                      </button>
-                    </td>
+          {isLoading ? (
+             <div className="p-8 text-center text-on-surface-variant">Loading jobs...</div>
+          ) : isError ? (
+             <div className="p-8 text-center text-red-600">Failed to load job history.</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[#fcfcfc] border-b border-outline-variant text-on-surface-variant font-label-md">
+                    <th className="px-6 py-4 font-semibold whitespace-nowrap">Job ID</th>
+                    <th className="px-6 py-4 font-semibold whitespace-nowrap">Description</th>
+                    <th className="px-6 py-4 font-semibold whitespace-nowrap">Tool / Method</th>
+                    <th className="px-6 py-4 font-semibold whitespace-nowrap">Status</th>
+                    <th className="px-6 py-4 font-semibold whitespace-nowrap">Queued At</th>
+                    <th className="px-6 py-4 font-semibold whitespace-nowrap">Runtime</th>
+                    <th className="px-6 py-4 font-semibold text-center whitespace-nowrap">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {jobs.length === 0 && (
+                    <tr>
+                      <td colSpan={7} className="px-6 py-8 text-center text-on-surface-variant">No jobs found. Start a new simulation to see it here.</td>
+                    </tr>
+                  )}
+                  {jobs.map((job) => (
+                    <tr key={job.job_id} className="border-b border-outline-variant hover:bg-[#fafafa] transition-colors">
+                      <td className="px-6 py-4 font-bold text-on-surface whitespace-nowrap">{job.job_id.split('_')[1] || job.job_id}</td>
+                      <td className="px-6 py-4 text-on-surface whitespace-nowrap">{job.description || 'Simulation Run'}</td>
+                      <td className="px-6 py-4 text-on-surface-variant whitespace-nowrap capitalize">{(job.tool_id || job.method || 'Engine').replace(/_/g, ' ')}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {job.status === 'running' && (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+                            Running
+                          </span>
+                        )}
+                        {job.status === 'completed' && (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-bold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                            Completed
+                          </span>
+                        )}
+                        {job.status === 'queued' && (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-200 text-gray-800 text-xs font-bold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
+                            Queued
+                          </span>
+                        )}
+                        {job.status === 'failed' && (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 text-red-800 text-xs font-bold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                            Failed
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-on-surface-variant whitespace-nowrap">
+                        {new Date(job.queued_at).toLocaleString(undefined, {
+                          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                        })}
+                      </td>
+                      <td className="px-6 py-4 text-on-surface-variant whitespace-nowrap">
+                        {job.runtime_seconds !== undefined ? `${job.runtime_seconds.toFixed(2)}s` : '-'}
+                      </td>
+                      <td className="px-6 py-4 text-center whitespace-nowrap">
+                        {job.status === 'completed' && (
+                          <button 
+                            onClick={() => handleViewResult(job.job_id)}
+                            className="px-3 py-1.5 bg-primary-container text-on-primary-container rounded-md hover:bg-opacity-80 transition-colors text-sm font-medium"
+                          >
+                            View Result
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
           
           {/* Pagination */}
           <div className="px-6 py-4 flex items-center justify-between border-t border-outline-variant bg-[#fcfcfc] text-sm text-on-surface-variant">
-            <span>Showing 1 to 4 of 1,249 jobs</span>
+            <span>Showing {jobs.length} jobs</span>
             <div className="flex gap-2">
               <button className="p-1 rounded hover:bg-surface-container-high text-on-surface-variant transition-colors disabled:opacity-50" disabled>
                 <span className="material-symbols-outlined text-[20px]">chevron_left</span>
               </button>
-              <button className="p-1 rounded hover:bg-surface-container-high text-on-surface-variant transition-colors">
+              <button className="p-1 rounded hover:bg-surface-container-high text-on-surface-variant transition-colors disabled:opacity-50" disabled>
                 <span className="material-symbols-outlined text-[20px]">chevron_right</span>
               </button>
             </div>
