@@ -49,14 +49,14 @@ _reg(id="1.3", name="water_temp", long_name="Temperature (HYCOM)", domain="physi
      units="°C", cube_source="hycom_reanalysis_2015h2", cube_variable_name="water_temp",
      temporal_range="1994-2015", temporal_resolution="3-hourly", spatial_resolution="1/12°",
      depth_dependent=True, quality_flag=3, required_for=["ensemble"])
-_reg(id="1.4", name="water_temp_rean", long_name="Temperature (HYCOM Reanalysis)", domain="physics",
-     units="°C", cube_source="hycom_reanalysis_2015h2", cube_variable_name="water_temp",
-     temporal_range="1994-2015", temporal_resolution="3-hourly", spatial_resolution="1/12°",
-     depth_dependent=True, quality_flag=3, required_for=["ensemble"])
-_reg(id="1.5", name="TEMPPR01", long_name="In-situ temperature (BBMP/SMA)", domain="physics",
-     units="°C", cube_source="bbmp", cube_variable_name="Chlorophyll_A",
+_reg(id="1.4", name="water_temp_rean", long_name="Temperature (HYCOM 2015-2020)", domain="physics",
+     units="°C", cube_source="hycom_surface_2023-07", cube_variable_name="water_temp",
+     temporal_range="2015-2020", temporal_resolution="3-hourly", spatial_resolution="1/12°",
+     depth_dependent=True, quality_flag=3, required_for=["ensemble","baseline","lagrangian","acoustic","sdm"])
+_reg(id="1.5", name="TEMPPR01", long_name="In-situ temperature (BBMP moored CTD)", domain="physics",
+     units="°C", cube_source="bbmp", cube_variable_name="TEMPPR01",
      temporal_range="2016-2024", temporal_resolution="biweekly", spatial_resolution="point",
-     depth_dependent=True, quality_flag=1, required_for=["validation"])
+     depth_dependent=True, quality_flag=1, required_for=["validation","baseline","ensemble"])
 _reg(id="1.6", name="air_temp_avg", long_name="Air temperature (SMA buoy)", domain="physics",
      units="°C", cube_source="sma_halifax", cube_variable_name="air_temp_avg",
      temporal_range="2016-2026", temporal_resolution="~10min", spatial_resolution="point",
@@ -109,10 +109,10 @@ _reg(id="1.17", name="wave_ht_sig", long_name="Wave height (SMA buoy)", domain="
      units="m", cube_source="sma_halifax", cube_variable_name="wave_ht_sig",
      temporal_range="2016-2026", temporal_resolution="~10min", spatial_resolution="point",
      depth_dependent=False, quality_flag=1, required_for=["validation"])
-_reg(id="1.18", name="wo", long_name="Upward velocity", domain="physics",
-     units="m/s", cube_source="glorys_physics", cube_variable_name="vo",
+_reg(id="1.18", name="wo", long_name="Upward velocity (GLORYS12)", domain="physics",
+     units="m/s", cube_source="glorys_physics", cube_variable_name="wo",
      temporal_range="2016-2023", temporal_resolution="daily", spatial_resolution="1/12°",
-     depth_dependent=True, quality_flag=3, required_for=["lagrangian"])
+     depth_dependent=True, quality_flag=3, required_for=["lagrangian","baseline"])
 _reg(id="1.19", name="utotal", long_name="Surface current (Euler+Stokes+tide)", domain="physics",
      units="m/s", cube_source="merged_uv_nrt", cube_variable_name="utotal",
      temporal_range="2024-2026", temporal_resolution="hourly", spatial_resolution="1/12°",
@@ -245,8 +245,8 @@ for (vid,vname,vlong,vreq,units,src,cname,trange,tres,sres,ddep,qf) in _waves:
 _atm = [
     ("4.1","u10","10m eastward wind","m/s","era5_atmosphere","u10",["wake","lagrangian","baseline"]),
     ("4.2","v10","10m northward wind","m/s","era5_atmosphere","v10",["wake","lagrangian","baseline"]),
-    ("4.3","wind_speed_10m_ometeo","10m wind (Open-Meteo)","m/s","openmeteo_marine","ocean_current_velocity",["baseline"]),
-    ("4.4","wind_dir_10m_ometeo","10m wind dir (Open-Meteo)","°","openmeteo_marine","ocean_current_direction",["baseline"]),
+    ("4.3","wind_speed_10m_ometeo","10m wind speed (Open-Meteo)","m/s","openmeteo_marine","wind_speed_10m",["baseline","wake","validation"]),
+    ("4.4","wind_dir_10m_ometeo","10m wind direction (Open-Meteo)","°","openmeteo_marine","wind_direction_10m",["baseline","wake","validation"]),
     ("4.5","u100","100m eastward wind (HUB)","m/s","era5_atmosphere","u100",["wake","optimization","baseline"]),
     ("4.6","v100","100m northward wind (HUB)","m/s","era5_atmosphere","v100",["wake","optimization","baseline"]),
     ("4.7","wind_spd_max","Wind gust (SMA buoy)","m/s","sma_halifax","wind_spd_max",["baseline"]),
@@ -334,8 +334,8 @@ _sf = [
     ("10.1","deptho","Bathymetry","m","bathymetry","deptho",["lagrangian","scour","acoustic","sdm","optimization","baseline"]),
     ("10.2","deptho_lev","Bathymetry levels","m","bathymetry","deptho_lev",["acoustic"]),
     ("10.3","mask","Land-sea mask","—","bathymetry","mask",["baseline"]),
-    ("10.4","sediment_type","Seafloor sediment type","categorical","governance","mpa_boundary",["scour","acoustic"]),
-    ("10.5","d50","Median grain size (placeholder)","mm","bathymetry","deptho",["scour"]),
+    ("10.4","sediment_type","Seafloor sediment type (Folk classification)","categorical","governance","sediment_type",["scour","acoustic","sdm"]),
+    ("10.5","d50","Median grain size (derived from sediment type)","mm","governance","sediment_type",["scour","acoustic","sdm"]),
 ]
 for (vid,vname,vlong,units,src,cname,vreq) in _sf:
     _reg(id=vid,name=vname,long_name=vlong,domain="seafloor",units=units,
@@ -368,10 +368,10 @@ _gov = [
     ("12.3","ecological_habitat","Ecological habitat (SARA)","polygon","governance","ecological_habitat",["optimization","cumulative"]),
     ("12.4","species_richness","Species richness zones","polygon","governance","species_richness",["optimization"]),
     ("12.5","functional_groups","Functional groups","polygon","governance","functional_groups",["optimization"]),
-    ("12.6","aquaculture","Aquaculture sites","polygon","governance","functional_groups",["optimization"]),
-    ("12.7","submarine_cables","Submarine cables","polygon","governance","mpa_boundary",["optimization"]),
-    ("12.8","disposal_sites","Dumping/disposal sites","polygon","governance","mpa_boundary",["optimization"]),
-    ("12.9","navigation","Navigational aids / TSS","polygon","governance","fisheries",["optimization"]),
+    ("12.6","aquaculture","Aquaculture lease sites","polygon","governance","aquaculture",["optimization","cumulative"]),
+    ("12.7","submarine_cables","Submarine cable corridors","polygon","governance","submarine_cables",["optimization","cumulative"]),
+    ("12.8","disposal_sites","Dredge disposal sites","polygon","governance","disposal_sites",["optimization","cumulative"]),
+    ("12.9","navigation","Navigation channels / TSS","polygon","governance","navigation",["optimization","cumulative"]),
 ]
 for (vid,vname,vlong,units,src,cname,vreq) in _gov:
     _reg(id=vid,name=vname,long_name=vlong,domain="governance",units=units,

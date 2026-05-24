@@ -499,11 +499,14 @@ class NSGA2Optimizer:
         return obj_matrix
 
     def _evaluate(self, cell_indices: np.ndarray) -> np.ndarray:
-        """Look up pre-computed objective values for given cells."""
-        # Find indices in the pool
-        sorter = np.argsort(self.cell_pool)
-        pool_indices = sorter[np.searchsorted(self.cell_pool, cell_indices, sorter=sorter)]
-        return self._obj_cache[pool_indices]
+        """Look up pre-computed objective values for given cell indices.
+
+        Uses a direct mapping from cell (flat grid index) to pool position.
+        """
+        # Build reverse map: cell_index -> pool_position
+        cell_to_pool = {int(c): idx for idx, c in enumerate(self.cell_pool)}
+        pool_positions = np.array([cell_to_pool.get(int(ci), 0) for ci in cell_indices])
+        return self._obj_cache[pool_positions]
 
     def _nondominated_sort(self, obj_values: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         """
@@ -680,21 +683,33 @@ class NSGA2Optimizer:
             # Evaluate population
             pop_obj = self._evaluate(pop_cells)
 
+            # Non-dominated sort (once per generation)
+            fronts, ranks = self._nondominated_sort(pop_obj)
+
+            # Compute crowding distance for ALL individuals
+            crowding_all = np.zeros(self.pop_size)
+            for front in fronts:
+                front_crowding = self._crowding_distance(pop_obj, front)
+                for idx, ci in zip(front, front_crowding):
+                    crowding_all[idx] = ci
+
             # Create offspring
             offspring_cells = np.zeros(self.pop_size, dtype=int)
 
             for i in range(0, self.pop_size, 2):
-                # Tournament selection
-                p1_idx = self._tournament_select(
-                    *self._nondominated_sort(pop_obj)
-                )
-                p2_idx = self._tournament_select(
-                    *self._nondominated_sort(pop_obj)
-                )
+                # Tournament selection — returns index into population (0..pop_size-1)
+                p1_pop_idx = self._tournament_select(ranks, crowding_all)
+                p2_pop_idx = self._tournament_select(ranks, crowding_all)
 
-                # Crossover (treat cell index as continuous in pool index space)
+                # Get pool positions of the selected parents
+                p1_cell = pop_cells[p1_pop_idx]
+                p2_cell = pop_cells[p2_pop_idx]
+                p1_pool_pos = int(np.searchsorted(self.cell_pool, p1_cell))
+                p2_pool_pos = int(np.searchsorted(self.cell_pool, p2_cell))
+
+                # Crossover on pool positions (0..n_feasible-1)
                 c1_pool, c2_pool = self._sbx_crossover(
-                    float(p1_idx), float(p2_idx)
+                    float(p1_pool_pos), float(p2_pool_pos)
                 )
 
                 # Mutation

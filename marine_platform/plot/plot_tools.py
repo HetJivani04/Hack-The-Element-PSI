@@ -71,8 +71,15 @@ class MarineViz:
         fig = plt.figure(figsize=figsize, facecolor=DARK_BG)
         return fig
 
-    def _dark_ax(self, fig, subplot_args=(111,)):
-        ax = fig.add_subplot(*subplot_args)
+    def _dark_ax(self, fig, *args):
+        if len(args) == 1:
+            pos = args[0]
+            if isinstance(pos, tuple) and len(pos) == 3 and all(isinstance(x, int) for x in pos):
+                ax = fig.add_subplot(*pos)
+            else:
+                ax = fig.add_subplot(pos)
+        else:
+            ax = fig.add_subplot(*args)
         ax.set_facecolor(CARD_BG)
         ax.tick_params(colors=TEXT_MUTED)
         for spine in ax.spines.values():
@@ -92,8 +99,8 @@ class MarineViz:
         fig.suptitle(f'Offshore Windmill Site Assessment — {self.site_lat}°N, {abs(self.site_lon)}°W',
                      color=TEXT_COLOR, fontsize=14, fontweight='bold', y=0.98)
 
-        # Panel 1: Environmental summary (text + gauges)
-        ax1 = self._dark_ax(fig, (3, 3, 1))
+        # Panel 1: Environmental summary
+        ax1 = self._dark_ax(fig, 331)
         ax1.axis('off')
         depth = data.get('depth_m', 85)
         ws = data.get('wind_speed_mean', 8.5)
@@ -335,65 +342,56 @@ class MarineViz:
     # ═══════════════════════════════════════════════════════════════════════
 
     def time_simulation_plot(self, time_r, filename='05_time_simulation.png'):
-        fig = self._dark_figure((16, 10))
-        gs = fig.add_gridspec(4, 2, hspace=0.3, wspace=0.3)
-        fig.suptitle('7-Day Weather-Driven Simulation — Vestas V236-15.0 MW',
+        fig = self._dark_figure((16, 11))
+        fig.suptitle('7-Day Weather-Driven Simulation — REAL ERA5 + GLORYS12 Data',
                     color=TEXT_COLOR, fontsize=13, fontweight='bold')
 
-        t = np.arange(168)  # hours
+        n_hours = len(time_r.get('wind_hourly', np.zeros(168)))
+        t = np.arange(n_hours)
         t_days = t / 24
 
-        panels = [
-            (gs[0, 0], time_r.get('wind_hourly', np.zeros(168)), 'Wind Speed at 100m Hub Height (m/s)', ACCENT),
-            (gs[0, 1], time_r.get('power_hourly', np.zeros(168)), 'Turbine Power Output (MW)', GREEN),
-            (gs[1, 0], time_r.get('deficit_hourly', np.zeros(168)), 'Wake Deficit at 2D (%)', ACCENT2),
-            (gs[1, 1], time_r.get('hs_hourly', np.zeros(168)), 'Significant Wave Height Hs (m)', CYAN),
-            (gs[2, 0], time_r.get('current_hourly', np.zeros(168)), 'Near-Bed Current Speed (m/s)', PURPLE),
-            (gs[2, 1], time_r.get('temp_hourly', np.zeros(168)), 'Sea Surface Temperature (°C)', RED),
-            (gs[3, :], time_r.get('scour_hourly', np.zeros(168)), 'Combined Wave-Current Shear Stress τcw (N/m²)', ACCENT2),
+        panel_data = [
+            (time_r.get('wind_hourly', np.zeros(168)), 'Wind Speed at 100m Hub Height (m/s)', ACCENT),
+            (time_r.get('power_hourly', np.zeros(168)), 'Turbine Power Output (MW)', GREEN),
+            (time_r.get('deficit_hourly', np.zeros(168)), 'Wake Deficit at 2D (%)', ACCENT2),
+            (time_r.get('hs_hourly', np.zeros(168)), 'Significant Wave Height Hs (m)', CYAN),
+            (time_r.get('current_hourly', np.zeros(168)), 'Near-Bed Current Speed (m/s)', PURPLE),
+            (time_r.get('temp_hourly', np.zeros(168)), 'Sea Surface Temperature (°C)', RED),
+            (time_r.get('scour_hourly', np.zeros(168)), 'Combined Shear Stress τcw (N/m²)', ACCENT2),
         ]
 
-        for i, (gspec, data_arr, ylabel, color) in enumerate(panels):
-            if gspec is gs[3, :]:
-                ax = self._dark_ax(fig, (gspec))
+        for i, (data_arr, ylabel, color) in enumerate(panel_data):
+            if i == 6:
+                ax = self._dark_ax(fig, (4, 1, 4))
             else:
-                ax = self._dark_ax(fig, (gspec))
+                ax = self._dark_ax(fig, (4, 2, i + 1))
             ax.fill_between(t_days, data_arr, alpha=0.3, color=color)
             ax.plot(t_days, data_arr, color=color, linewidth=1.2)
             ax.set_ylabel(ylabel, color=TEXT_MUTED, fontsize=9)
 
-            # Mark storm/exceedance periods
-            if i == 3:  # Hs
+            if i == 3:
                 storm_mask = data_arr > np.percentile(data_arr, 90)
                 if np.any(storm_mask):
                     ax.fill_between(t_days, 0, np.max(data_arr) * 1.1, where=storm_mask,
-                                   color=RED, alpha=0.1, label='Top 10% events')
-            if i == 5:  # scour
+                                   color=RED, alpha=0.1)
+
+            if i == 5:
+                ax.set_xlabel('Time (days)', color=TEXT_MUTED, fontsize=9)
+            if i == 6:
+                ax.set_xlabel('Time (days)', color=TEXT_MUTED, fontsize=9)
                 exceed_mask = data_arr > 0.3
                 if np.any(exceed_mask):
                     ax.fill_between(t_days, 0, np.max(data_arr) * 1.1, where=exceed_mask,
-                                   color=RED, alpha=0.15, label='Exceedance (τcw > 0.3)')
+                                   color=RED, alpha=0.15)
 
-            if i >= 4:
-                ax.set_xlabel('Time (days)', color=TEXT_MUTED, fontsize=9)
-
-            # Daily vertical lines
-            for day in range(8):
+            for day in range(int(np.ceil(n_hours / 24)) + 1):
                 ax.axvline(day, color='white', linewidth=0.3, alpha=0.1)
+            ax.set_xlim(0, n_hours / 24)
 
-            ax.set_xlim(0, 7)
-
-        # Summary text box
-        ax_text = self._dark_ax(fig, (gs[3, :]))
-        ax_text.set_visible(False)
-        total_mwh = time_r.get('total_mwh', 0)
-        cf = time_r.get('capacity_factor', 0)
-        ax_summary = fig.add_axes([0.82, 0.02, 0.16, 0.06])
-        ax_summary.set_facecolor(CARD_BG)
-        ax_summary.text(0.5, 0.5, f'{total_mwh:.0f} MWh\nCF={cf:.1f}%',
-                       transform=ax_summary.transAxes, fontsize=10, fontweight='bold',
-                       color=GREEN, ha='center', va='center')
-        ax_summary.axis('off')
+        # Summary box
+        fig.text(0.85, 0.03, f'{time_r.get("total_mwh", 0):.0f} MWh\nCF={time_r.get("capacity_factor", 0):.1f}%',
+                fontsize=11, fontweight='bold', color=GREEN, ha='center', va='center',
+                bbox=dict(boxstyle='round', facecolor=CARD_BG, edgecolor='#333', pad=0.8))
 
         path = os.path.join(FIG_DIR, filename)
         fig.savefig(path, dpi=300, facecolor=DARK_BG, edgecolor='none')
