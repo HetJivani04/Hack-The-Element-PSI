@@ -1,24 +1,50 @@
-import { Viewer, Camera, Entity, PointGraphics } from 'resium'
-import { Cartesian3, Color } from 'cesium'
+import { useRef } from 'react'
+import { Viewer, CameraFlyTo, Entity, PointGraphics, RectangleGraphics, type CesiumComponentRef } from 'resium'
+import { Cartesian3, Color, Rectangle, Math as CesiumMath, type Viewer as CesiumViewer } from 'cesium'
 import VariableSelectorPanel from '../components/panels/VariableSelectorPanel'
 import AnalysisMethodsPanel from '../components/panels/AnalysisMethodsPanel'
 import TurbineSpecPanel from '../components/panels/TurbineSpecPanel'
+import RegionPanel from '../components/panels/RegionPanel'
 import TimeRangePanel from '../components/panels/TimeRangePanel'
 import { useSimulationStore } from '../store/simulationStore'
-import { useJobStatus } from '../api/client'
+import { useJobStatus, useRegion } from '../api/client'
 
 export default function SimulationDashboard() {
   const windmillPos = useSimulationStore(state => state.windmillPosition)
   const setWindmillPos = useSimulationStore(state => state.setWindmillPosition)
+  const regionBounds = useSimulationStore(state => state.regionBounds)
   const currentJobId = useSimulationStore(state => state.currentJobId)
   
   const { data: jobStatus } = useJobStatus(currentJobId)
+  const { data: regionData } = useRegion()
+  const viewerRef = useRef<CesiumComponentRef<CesiumViewer>>(null)
 
   // Map Click Handler for placing the windmill
-  const handleMapClick = (_movement: unknown) => {
-    // In a real implementation we would pick the ellipsoid and convert to cartographic lat/lon
-    // For now we will mock the location on click so the UI can proceed
-    setWindmillPos({ lat: 44.1, lon: -63.2 }) 
+  const handleMapClick = (movement: any) => {
+    const viewer = viewerRef.current?.cesiumElement
+    if (!viewer) return
+    
+    // Pick the ellipsoid to get the true 3D position
+    const pickedPosition = viewer.scene.camera.pickEllipsoid(movement.position, viewer.scene.globe.ellipsoid)
+    
+    if (pickedPosition) {
+      const cartographic = viewer.scene.globe.ellipsoid.cartesianToCartographic(pickedPosition)
+      const lon = CesiumMath.toDegrees(cartographic.longitude)
+      const lat = CesiumMath.toDegrees(cartographic.latitude)
+      
+      // Validate against bounding box if available
+      if (regionBounds) {
+        const { southwest, northeast } = regionBounds
+        if (lon >= southwest.lon && lon <= northeast.lon && lat >= southwest.lat && lat <= northeast.lat) {
+          setWindmillPos({ lat, lon }) 
+        } else {
+          // Optionally alert the user they clicked out of bounds, or just ignore
+          console.warn("Clicked outside the simulation bounding box.")
+        }
+      } else {
+        setWindmillPos({ lat, lon })
+      }
+    }
   }
 
   return (
@@ -26,6 +52,7 @@ export default function SimulationDashboard() {
       
       {/* 3D Globe */}
       <Viewer 
+        ref={viewerRef}
         full 
         timeline={false} 
         animation={false} 
@@ -38,10 +65,29 @@ export default function SimulationDashboard() {
         selectionIndicator={false}
         onClick={handleMapClick}
       >
-        <Camera 
+        <CameraFlyTo 
+          duration={0}
+          once={true}
           // Default view locked to Scotian Shelf
           destination={Cartesian3.fromDegrees(-63.0, 44.0, 1500000)}
         />
+        {/* Draw Region Bounding Box */}
+        {regionBounds && (
+          <Entity>
+            <RectangleGraphics
+              coordinates={Rectangle.fromDegrees(
+                regionBounds.southwest.lon,
+                regionBounds.southwest.lat,
+                regionBounds.northeast.lon,
+                regionBounds.northeast.lat
+              )}
+              material={Color.TEAL.withAlpha(0.1)}
+              outline={true}
+              outlineColor={Color.TEAL}
+              outlineWidth={2}
+            />
+          </Entity>
+        )}
         
         {/* Draw Windmill Pin if set */}
         {windmillPos && (
@@ -55,6 +101,7 @@ export default function SimulationDashboard() {
       <VariableSelectorPanel />
       <AnalysisMethodsPanel />
       <TurbineSpecPanel />
+      <RegionPanel />
       <TimeRangePanel />
 
       {/* Job Progress Overlay */}

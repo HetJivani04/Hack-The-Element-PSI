@@ -57,7 +57,10 @@ const DEFAULT_GROUNDED = { hubHeight: 150, rotorDiameter: 236, ratedPower: 15, m
 const DEFAULT_FLOATING = { hubHeight: 150, rotorDiameter: 236, ratedPower: 15, materialGrade: 's355', columnDiameter: 12.5, floaterRadius: 45.0 }
 
 export const useSimulationStore = create<SimulationState>((set) => ({
-  regionBounds: null,
+  regionBounds: {
+    southwest: { lat: 43.68, lon: -64.33 },
+    northeast: { lat: 44.83, lon: -61.94 }
+  },
   setRegionBounds: (bounds) => set({ regionBounds: bounds }),
   
   windmillPosition: null,

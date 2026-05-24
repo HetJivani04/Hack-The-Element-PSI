@@ -4,6 +4,22 @@ export default function TurbineSpecPanel() {
   const specs = useSimulationStore(state => state.turbineSpecs)
   const setSpecs = useSimulationStore(state => state.setTurbineSpecs)
   const windmillType = useSimulationStore(state => state.windmillType)
+  const windmillPos = useSimulationStore(state => state.windmillPosition)
+  const setWindmillPos = useSimulationStore(state => state.setWindmillPosition)
+
+  const handleLatChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const lat = parseFloat(e.target.value)
+    if (!isNaN(lat)) {
+      setWindmillPos({ lat, lon: windmillPos?.lon ?? -63.0 })
+    }
+  }
+
+  const handleLonChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const lon = parseFloat(e.target.value)
+    if (!isNaN(lon)) {
+      setWindmillPos({ lat: windmillPos?.lat ?? 44.0, lon })
+    }
+  }
 
   return (
     <div className="absolute top-[480px] left-stack-md w-[320px] bg-surface/90 backdrop-blur-md border border-outline-variant rounded-xl p-stack-md flex flex-col gap-stack-md shadow-sm z-20">
@@ -18,6 +34,29 @@ export default function TurbineSpecPanel() {
       </div>
       
       <div className="flex flex-col gap-stack-sm pt-2">
+        {/* Location Input Section */}
+        <div className="flex flex-col gap-1 pb-2 border-b border-outline-variant">
+          <label className="font-label-sm text-label-sm text-on-surface">Location (Lat, Lon)</label>
+          <div className="flex gap-2">
+            <input 
+              type="number"
+              step="0.01"
+              value={windmillPos?.lat ?? ''}
+              onChange={handleLatChange}
+              placeholder="Latitude"
+              className="w-1/2 bg-surface-container-low border border-outline-variant text-on-surface font-body-sm text-body-sm py-1 px-2 rounded focus:outline-none focus:border-secondary transition-all"
+            />
+            <input 
+              type="number"
+              step="0.01"
+              value={windmillPos?.lon ?? ''}
+              onChange={handleLonChange}
+              placeholder="Longitude"
+              className="w-1/2 bg-surface-container-low border border-outline-variant text-on-surface font-body-sm text-body-sm py-1 px-2 rounded focus:outline-none focus:border-secondary transition-all"
+            />
+          </div>
+        </div>
+
         <div className="flex flex-col gap-1">
           <div className="flex justify-between items-end">
             <label className="font-label-sm text-label-sm text-on-surface">Hub Height (m)</label>
