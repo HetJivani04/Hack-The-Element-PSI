@@ -148,7 +148,7 @@ export default function SimulationDashboard() {
         onClick={handleMapClick}
       >
         <Camera
-          destination={Cartesian3.fromDegrees(-63.0, 44.0, 1500000)}
+          position={Cartesian3.fromDegrees(-63.0, 44.0, 1500000)}
         />
 
         {windmillPos && (
