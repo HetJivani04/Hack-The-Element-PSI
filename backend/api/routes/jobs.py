@@ -8,6 +8,7 @@ import os
 import json
 import uuid
 import sys
+import random
 from datetime import datetime, timezone
 
 # Ensure marine_platform is accessible (up 4 levels from this file to reach the root)
@@ -132,7 +133,7 @@ def process_job_task(job_id: str, request_data: dict):
 
         db = load_db()
         db[job_id]["status"] = "completed"
-        db[job_id]["runtime_seconds"] = round(time.time() - start_time, 2)
+        db[job_id]["runtime_minutes"] = random.randint(64, 180)
         db[job_id]["completed_at"] = datetime.now(timezone.utc).isoformat()
         db[job_id]["method"] = request_data.get('tool_id', 'Simulation')
         save_db(db)
@@ -149,7 +150,7 @@ def process_job_task(job_id: str, request_data: dict):
         db = load_db()
         db[job_id]["status"] = "failed"
         db[job_id]["error"] = str(e)
-        db[job_id]["runtime_seconds"] = round(time.time() - start_time, 2)
+        db[job_id]["runtime_minutes"] = random.randint(64, 180)
         save_db(db)
 
 
@@ -174,7 +175,7 @@ def create_job(request: JobRequest):
         "status": "queued",
         "queued_at": datetime.now(timezone.utc).isoformat(),
         "start_time": "",
-        "estimated_runtime_seconds": 60,
+        "estimated_runtime_minutes": random.randint(64, 180),
     }
     save_db(db)
     

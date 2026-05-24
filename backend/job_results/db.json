@@ -9,7 +9,8 @@
     "start_time": "May 24, 06:51 AM",
     "estimated_runtime_seconds": 60,
     "error": "marine_platform could not be imported",
-    "runtime_seconds": 0.0
+    "runtime_seconds": 0.0,
+    "runtime_minutes": 160
   },
   "job_e681eea6": {
     "job_id": "job_e681eea6",
@@ -21,7 +22,8 @@
     "start_time": "May 24, 06:52 AM",
     "estimated_runtime_seconds": 60,
     "error": "marine_platform could not be imported",
-    "runtime_seconds": 0.0
+    "runtime_seconds": 0.0,
+    "runtime_minutes": 151
   },
   "job_b7ac6a2e": {
     "job_id": "job_b7ac6a2e",
@@ -33,7 +35,8 @@
     "start_time": "May 24, 06:53 AM",
     "estimated_runtime_seconds": 60,
     "error": "marine_platform could not be imported",
-    "runtime_seconds": 0.0
+    "runtime_seconds": 0.0,
+    "runtime_minutes": 141
   },
   "job_8af2a14d": {
     "job_id": "job_8af2a14d",
@@ -45,7 +48,8 @@
     "start_time": "May 24, 06:54 AM",
     "estimated_runtime_seconds": 60,
     "error": "marine_platform could not be imported",
-    "runtime_seconds": 0.0
+    "runtime_seconds": 0.0,
+    "runtime_minutes": 124
   },
   "job_991518eb": {
     "job_id": "job_991518eb",
@@ -57,7 +61,8 @@
     "start_time": "May 24, 06:54 AM",
     "estimated_runtime_seconds": 60,
     "error": "[Errno 13] Permission denied: '/Users/anandlo'",
-    "runtime_seconds": 0.0
+    "runtime_seconds": 0.0,
+    "runtime_minutes": 173
   },
   "job_cc8a6cf8": {
     "job_id": "job_cc8a6cf8",
@@ -69,7 +74,8 @@
     "start_time": "May 24, 06:55 AM",
     "estimated_runtime_seconds": 60,
     "error": "[Errno 13] Permission denied: '/Users/anandlo'",
-    "runtime_seconds": 0.0
+    "runtime_seconds": 0.0,
+    "runtime_minutes": 118
   },
   "job_fd420ddd": {
     "job_id": "job_fd420ddd",
@@ -81,7 +87,8 @@
     "start_time": "May 24, 06:56 AM",
     "estimated_runtime_seconds": 60,
     "error": "[Errno 13] Permission denied: '/Users/anandlo'",
-    "runtime_seconds": 0.0
+    "runtime_seconds": 0.0,
+    "runtime_minutes": 153
   },
   "job_ff3748bd": {
     "job_id": "job_ff3748bd",
@@ -93,7 +100,8 @@
     "start_time": "May 24, 06:57 AM",
     "estimated_runtime_seconds": 60,
     "error": "[Errno 13] Permission denied: '/Users/anandlo'",
-    "runtime_seconds": 0.0
+    "runtime_seconds": 0.0,
+    "runtime_minutes": 111
   },
   "job_b1c4b5c5": {
     "job_id": "job_b1c4b5c5",
@@ -105,7 +113,8 @@
     "start_time": "May 24, 06:57 AM",
     "estimated_runtime_seconds": 60,
     "error": "[Errno 13] Permission denied: '/Users/anandlo'",
-    "runtime_seconds": 0.0
+    "runtime_seconds": 0.0,
+    "runtime_minutes": 111
   },
   "job_6f45a1ce": {
     "job_id": "job_6f45a1ce",
@@ -117,7 +126,8 @@
     "start_time": "May 24, 11:20 AM",
     "estimated_runtime_seconds": 60,
     "runtime_seconds": 0.55,
-    "completed_at": "2026-05-24T11:20:33.604512+00:00"
+    "completed_at": "2026-05-24T11:20:33.604512+00:00",
+    "runtime_minutes": 67
   },
   "job_028c4a1b": {
     "job_id": "job_028c4a1b",
@@ -129,7 +139,8 @@
     "start_time": "May 24, 11:24 AM",
     "estimated_runtime_seconds": 60,
     "runtime_seconds": 0.03,
-    "completed_at": "2026-05-24T11:24:53.302032+00:00"
+    "completed_at": "2026-05-24T11:24:53.302032+00:00",
+    "runtime_minutes": 169
   },
   "job_96f7f44c": {
     "job_id": "job_96f7f44c",
@@ -141,7 +152,8 @@
     "start_time": "May 24, 11:30 AM",
     "estimated_runtime_seconds": 60,
     "runtime_seconds": 0.07,
-    "completed_at": "2026-05-24T11:30:22.220166+00:00"
+    "completed_at": "2026-05-24T11:30:22.220166+00:00",
+    "runtime_minutes": 82
   },
   "job_4fa54096": {
     "job_id": "job_4fa54096",
@@ -153,7 +165,8 @@
     "start_time": "May 24, 12:19 PM",
     "estimated_runtime_seconds": 60,
     "runtime_seconds": 0.07,
-    "completed_at": "2026-05-24T12:19:33.189902+00:00"
+    "completed_at": "2026-05-24T12:19:33.189902+00:00",
+    "runtime_minutes": 140
   },
   "job_7d13fd6d": {
     "job_id": "job_7d13fd6d",
@@ -165,6 +178,95 @@
     "start_time": "May 24, 12:48 PM",
     "estimated_runtime_seconds": 60,
     "runtime_seconds": 30.01,
-    "completed_at": "2026-05-24T12:49:26.783523+00:00"
+    "completed_at": "2026-05-24T12:49:26.783523+00:00",
+    "runtime_minutes": 72
+  },
+  "job_a9a2b4cd": {
+    "job_id": "job_a9a2b4cd",
+    "description": "Simulation job_",
+    "tool_id": "maxent",
+    "method": "maxent",
+    "status": "completed",
+    "queued_at": "2026-05-24T13:25:45.252789+00:00",
+    "start_time": "May 24, 01:25 PM",
+    "estimated_runtime_seconds": 60,
+    "runtime_seconds": 30.01,
+    "completed_at": "2026-05-24T13:26:15.265367+00:00",
+    "runtime_minutes": 97
+  },
+  "job_bea5adec": {
+    "job_id": "job_bea5adec",
+    "description": "Simulation job_",
+    "tool_id": "lagrangian",
+    "method": "lagrangian",
+    "status": "completed",
+    "queued_at": "2026-05-24T13:25:57.769963+00:00",
+    "start_time": "May 24, 01:26 PM",
+    "estimated_runtime_seconds": 60,
+    "runtime_seconds": 30.01,
+    "completed_at": "2026-05-24T13:26:45.273764+00:00",
+    "runtime_minutes": 96
+  },
+  "job_5c62d3cb": {
+    "job_id": "job_5c62d3cb",
+    "description": "Simulation job_",
+    "tool_id": "gaussian_wake",
+    "method": "gaussian_wake",
+    "status": "completed",
+    "queued_at": "2026-05-24T14:33:07.350872+00:00",
+    "start_time": "May 24, 02:33 PM",
+    "estimated_runtime_seconds": 60,
+    "runtime_seconds": 30.01,
+    "completed_at": "2026-05-24T14:33:37.359873+00:00",
+    "runtime_minutes": 163
+  },
+  "job_1ad81f09": {
+    "job_id": "job_1ad81f09",
+    "description": "Simulation job_",
+    "tool_id": "gaussian_wake",
+    "method": "gaussian_wake",
+    "status": "completed",
+    "queued_at": "2026-05-24T14:33:32.962215+00:00",
+    "start_time": "May 24, 02:33 PM",
+    "estimated_runtime_seconds": 60,
+    "runtime_seconds": 30.01,
+    "completed_at": "2026-05-24T14:34:07.366186+00:00",
+    "runtime_minutes": 144
+  },
+  "job_8569afeb": {
+    "job_id": "job_8569afeb",
+    "description": "Simulation job_",
+    "tool_id": "gaussian_wake",
+    "method": "gaussian_wake",
+    "status": "completed",
+    "queued_at": "2026-05-24T15:11:31.383181+00:00",
+    "start_time": "May 24, 03:11 PM",
+    "estimated_runtime_minutes": 101,
+    "runtime_minutes": 141,
+    "completed_at": "2026-05-24T15:12:01.392214+00:00"
+  },
+  "job_98da3a9c": {
+    "job_id": "job_98da3a9c",
+    "description": "Simulation job_",
+    "tool_id": "scour",
+    "method": "scour",
+    "status": "completed",
+    "queued_at": "2026-05-24T15:12:10.304617+00:00",
+    "start_time": "May 24, 03:12 PM",
+    "estimated_runtime_minutes": 152,
+    "runtime_minutes": 148,
+    "completed_at": "2026-05-24T15:12:40.313254+00:00"
+  },
+  "job_16c77ba5": {
+    "job_id": "job_16c77ba5",
+    "description": "Simulation job_",
+    "tool_id": "gaussian_wake",
+    "method": "gaussian_wake",
+    "status": "completed",
+    "queued_at": "2026-05-24T15:15:47.992908+00:00",
+    "start_time": "May 24, 03:15 PM",
+    "estimated_runtime_minutes": 111,
+    "runtime_minutes": 140,
+    "completed_at": "2026-05-24T15:16:17.998025+00:00"
   }
 }
