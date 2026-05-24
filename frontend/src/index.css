@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-surface: #fbf9f8;
+    --color-surface-dim: #dbd9d9;
+    --color-surface-bright: #fbf9f8;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #f5f3f3;
+    --color-surface-container: #efeded;
+    --color-surface-container-high: #eae8e7;
+    --color-surface-container-highest: #e4e2e2;
+    --color-on-surface: #1b1c1c;
+    --color-on-surface-variant: #424841;
+    --color-inverse-surface: #303030;
+    --color-inverse-on-surface: #f2f0f0;
+    --color-outline: #727971;
+    --color-outline-variant: #c2c8bf;
+    --color-surface-tint: #456648;
+    --color-primary: #426446;
+    --color-on-primary: #ffffff;
+    --color-primary-container: #5a7d5d;
+    --color-on-primary-container: #f7fff2;
+    --color-inverse-primary: #abd0ab;
+    --color-secondary: #446464;
+    --color-on-secondary: #ffffff;
+    --color-secondary-container: #c6e9e9;
+    --color-on-secondary-container: #4a6a6a;
+    --color-tertiary: #7e4e5b;
+    --color-on-tertiary: #ffffff;
+    --color-tertiary-container: #996673;
+    --color-on-tertiary-container: #fffbff;
+    --color-error: #ba1a1a;
+    --color-on-error: #ffffff;
+    --color-error-container: #ffdad6;
+    --color-on-error-container: #93000a;
+    --color-primary-fixed: #c6ecc6;
+    --color-primary-fixed-dim: #abd0ab;
+    --color-on-primary-fixed: #01210a;
+    --color-on-primary-fixed-variant: #2d4e32;
+    --color-secondary-fixed: #c6e9e9;
+    --color-secondary-fixed-dim: #abcdcd;
+    --color-on-secondary-fixed: #002020;
+    --color-on-secondary-fixed-variant: #2c4c4c;
+    --color-tertiary-fixed: #ffd9e1;
+    --color-tertiary-fixed-dim: #f3b6c4;
+    --color-on-tertiary-fixed: #330f1b;
+    --color-on-tertiary-fixed-variant: #663a46;
+    --color-background: #fbf9f8;
+    --color-on-background: #1b1c1c;
+    --color-surface-variant: #e4e2e2;
+
+    --font-heading: 'Source Serif 4', serif;
+    --font-body: 'Public Sans', sans-serif;
+  }
+}

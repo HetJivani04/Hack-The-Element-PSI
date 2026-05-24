@@ -1,0 +1,38 @@
+# --- Python / Backend ---
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# FastAPI / Data Science specific
+*.zarr/
+*.nc
+*.grib
+*.hdf5
+.pytest_cache/
+
+# --- Node / Frontend ---
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# --- General / OS ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# --- Environment Variables ---
+.env
+.env.*
+!.env.example
