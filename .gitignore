@@ -36,3 +36,13 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# --- Claude config ---
+.claude/
+
+# --- Large data ---
+data/
+
+# --- Output files ---
+output/
+*.log
