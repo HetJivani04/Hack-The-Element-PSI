@@ -22,3 +22,6 @@ Marine Digital Twin Platform — Scotian Shelf Region (`43.68°N–44.83°N, -64
 - **10 gaps** — all mitigable (diagnostic computation or alternative databases)
 - **Temporal span:** 1940–present (ERA5), 1993–present (Copernicus reanalysis), real-time (NRT + buoys)
 - **Spatial resolution:** 1/12° (~8 km) models, 15 arc-sec (~450 m) bathymetry, point in-situ
+
+### Demo Link 
+https://drive.google.com/file/d/1tS_uzlaD9QxP25eyt1MyKsT37QL4g_cD/view?usp=share_link
