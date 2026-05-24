@@ -142,30 +142,30 @@ export default function SimulationDashboard() {
         
         {/* Left Side Pane */}
         <div 
-          className={`h-full bg-surface border-r border-outline-variant flex flex-col z-40 flex-shrink-0 overflow-y-auto custom-scrollbar transition-all duration-300 ${
-            isSidebarOpen ? 'w-[400px] translate-x-0' : 'w-0 -translate-x-full border-r-0'
+          className={`absolute top-0 left-0 h-full liquid-glass border-r border-white/40 flex flex-col z-40 overflow-y-auto custom-scrollbar transition-all duration-500 ease-in-out ${
+            isSidebarOpen ? 'w-[420px] translate-x-0 opacity-100' : 'w-[420px] -translate-x-full opacity-0 pointer-events-none'
           }`}
         >
           {isSidebarOpen && (
             <>
-              <div className="p-4 border-b border-outline-variant bg-surface-container-low flex-shrink-0 flex justify-between items-center">
+              <div className="p-5 border-b border-white/30 bg-white/30 flex-shrink-0 flex justify-between items-center">
                 <div>
                   <h2 className="font-headline-sm font-bold text-on-surface">Simulation Setup</h2>
                   <p className="text-body-sm text-on-surface-variant">Configure environment and turbine parameters</p>
                 </div>
                 <button 
                   onClick={() => setIsSidebarOpen(false)}
-                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors"
+                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/50 text-on-surface-variant transition-colors"
                 >
                   <span className="material-symbols-outlined">close</span>
                 </button>
               </div>
               
-              <div className="flex-1 p-4 flex flex-col gap-4 bg-surface-container-lowest">
-                <VariableSelectorPanel />
-                <AnalysisMethodsPanel />
-                <RegionPanel />
-                <TurbineSpecPanel />
+              <div className="flex-1 p-5 flex flex-col gap-5">
+                <div className="glass-stagger-1"><VariableSelectorPanel /></div>
+                <div className="glass-stagger-2"><AnalysisMethodsPanel /></div>
+                <div className="glass-stagger-3"><RegionPanel /></div>
+                <div className="glass-stagger-4"><TurbineSpecPanel /></div>
               </div>
             </>
           )}

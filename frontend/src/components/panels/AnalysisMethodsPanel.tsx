@@ -18,7 +18,7 @@ export default function AnalysisMethodsPanel() {
   if (!isOpen) {
     return (
       <div 
-        className="relative bg-white border border-outline-variant rounded-xl p-stack-sm flex items-center gap-2 cursor-pointer shadow-md hover:bg-[#f5f5f5] transition-colors w-full"
+        className="relative bg-white/50 backdrop-blur-md border border-white/40 rounded-xl p-stack-sm flex items-center gap-2 cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:bg-white/70 transition-colors w-full"
         onClick={() => setIsOpen(true)}
       >
         <span className="material-symbols-outlined text-tertiary">science</span>
@@ -33,10 +33,10 @@ export default function AnalysisMethodsPanel() {
   }
 
   return (
-    <div className="relative w-full flex flex-col bg-white border border-outline-variant rounded-xl shadow-xl overflow-hidden transition-all duration-200">
+    <div className="relative w-full flex flex-col bg-white/50 backdrop-blur-md border border-white/40 rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.08)] overflow-hidden transition-all duration-200">
       
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-outline-variant p-stack-md bg-white">
+      <div className="flex items-center justify-between border-b border-white/30 p-stack-md bg-white/30">
         <h3 className="font-headline-sm text-headline-sm font-semibold text-on-surface flex items-center gap-2">
           <span className="material-symbols-outlined text-tertiary">science</span>
           Analysis Methods
@@ -52,14 +52,14 @@ export default function AnalysisMethodsPanel() {
           return (
             <div 
               key={tool.id} 
-              className={`p-stack-sm border rounded-lg cursor-pointer transition-colors ${isSelected ? 'border-primary bg-primary/5' : 'border-outline-variant hover:border-outline'}`}
+              className={`p-stack-sm border-2 rounded-lg cursor-pointer transition-colors ${isSelected ? 'border-[#6B8E6D] bg-[#6B8E6D]' : 'border-outline-variant hover:border-outline'}`}
               onClick={() => toggleTool(tool.id)}
             >
               <div className="flex items-center gap-2 mb-1">
-                <span className={`material-symbols-outlined text-[20px] ${isSelected ? 'text-primary' : 'text-on-surface-variant'}`}>{tool.icon}</span>
-                <span className={`font-label-md ${isSelected ? 'text-primary font-bold' : 'text-on-surface'}`}>{tool.name}</span>
+                <span className={`material-symbols-outlined text-[20px] ${isSelected ? 'text-white' : 'text-on-surface-variant'}`}>{tool.icon}</span>
+                <span className={`font-label-md ${isSelected ? 'text-white font-bold' : 'text-on-surface'}`}>{tool.name}</span>
               </div>
-              <p className="text-[11px] text-on-surface-variant pl-7">{tool.desc}</p>
+              <p className={`text-[11px] pl-7 ${isSelected ? 'text-white/90' : 'text-on-surface-variant'}`}>{tool.desc}</p>
             </div>
           )
         })}

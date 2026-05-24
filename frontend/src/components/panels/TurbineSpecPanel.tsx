@@ -19,7 +19,7 @@ export default function TurbineSpecPanel() {
   if (!isOpen) {
     return (
       <div 
-        className="relative bg-white border border-outline-variant rounded-xl p-stack-sm flex items-center gap-2 cursor-pointer shadow-md hover:bg-[#f5f5f5] transition-colors w-full"
+        className="relative bg-white/50 backdrop-blur-md border border-white/40 rounded-xl p-stack-sm flex items-center gap-2 cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:bg-white/70 transition-colors w-full"
         onClick={() => setIsOpen(true)}
       >
         <span className="material-symbols-outlined text-tertiary">wind_power</span>
@@ -32,10 +32,10 @@ export default function TurbineSpecPanel() {
   }
 
   return (
-    <div className="relative w-full flex flex-col bg-white border border-outline-variant rounded-xl shadow-xl overflow-hidden transition-all duration-200">
+    <div className="relative w-full flex flex-col bg-white/50 backdrop-blur-md border border-white/40 rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.08)] overflow-hidden transition-all duration-200">
       
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-outline-variant p-stack-md bg-white">
+      <div className="flex items-center justify-between border-b border-white/30 p-stack-md bg-white/30">
         <h3 className="font-headline-sm text-headline-sm font-semibold text-on-surface flex items-center gap-2">
           <span className="material-symbols-outlined text-tertiary">wind_power</span>
           Turbine & Location

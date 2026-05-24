@@ -29,7 +29,7 @@ export default function TimeRangePanel() {
   }
 
   return (
-    <div className="absolute bottom-stack-lg right-margin-desktop left-margin-desktop max-w-[900px] mx-auto bg-surface/90 backdrop-blur-md border border-outline-variant rounded-xl p-stack-sm flex items-center justify-between shadow-sm z-20">
+    <div className="absolute bottom-stack-lg right-margin-desktop left-margin-desktop max-w-[900px] mx-auto liquid-glass rounded-xl p-stack-sm flex items-center justify-between z-20">
       <div className="flex justify-between items-center w-full">
         <div className="flex gap-stack-md items-center">
           <button className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface hover:text-primary hover:bg-surface-variant transition-colors">
@@ -37,28 +37,28 @@ export default function TimeRangePanel() {
           </button>
           <div className="flex flex-col w-96 gap-2">
             <div className="flex gap-4 items-center">
-              <span className="text-xs text-on-surface-variant w-10">Start:</span>
+              <span className="text-xs font-bold text-[#2F4F4F] w-10">Start:</span>
               <input 
                 type="range" 
                 min={1993} 
                 max={timeRange.endYear} 
                 value={timeRange.startYear}
                 onChange={(e) => setTimeRange({ startYear: Number(e.target.value), endYear: timeRange.endYear })}
-                className="w-full h-1 bg-surface-variant rounded-full appearance-none cursor-pointer accent-primary"
+                className="w-full h-1 bg-surface-variant rounded-full appearance-none cursor-pointer accent-[#2F4F4F]"
               />
-              <span className="text-xs text-primary font-mono w-10">{timeRange.startYear}</span>
+              <span className="text-xs text-[#2F4F4F] font-bold font-mono w-10">{timeRange.startYear}</span>
             </div>
             <div className="flex gap-4 items-center">
-              <span className="text-xs text-on-surface-variant w-10">End:</span>
+              <span className="text-xs font-bold text-[#2F4F4F] w-10">End:</span>
               <input 
                 type="range" 
                 min={timeRange.startYear} 
                 max={2026} 
                 value={timeRange.endYear}
                 onChange={(e) => setTimeRange({ startYear: timeRange.startYear, endYear: Number(e.target.value) })}
-                className="w-full h-1 bg-surface-variant rounded-full appearance-none cursor-pointer accent-primary"
+                className="w-full h-1 bg-surface-variant rounded-full appearance-none cursor-pointer accent-[#2F4F4F]"
               />
-              <span className="text-xs text-primary font-mono w-10">{timeRange.endYear}</span>
+              <span className="text-xs text-[#2F4F4F] font-bold font-mono w-10">{timeRange.endYear}</span>
             </div>
           </div>
         </div>

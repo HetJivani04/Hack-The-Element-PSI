@@ -52,7 +52,33 @@
     --color-on-background: #1b1c1c;
     --color-surface-variant: #e4e2e2;
 
-    --font-heading: 'Source Serif 4', serif;
-    --font-body: 'Public Sans', sans-serif;
+    --font-heading: 'Helvetica World', Helvetica, Arial, sans-serif;
+    --font-body: 'Helvetica World', Helvetica, Arial, sans-serif;
   }
+}
+
+@keyframes slideInGlass {
+  0% { opacity: 0; transform: translateX(-20px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+.glass-stagger-1 { animation: slideInGlass 0.4s ease-out 0.1s both; }
+.glass-stagger-2 { animation: slideInGlass 0.4s ease-out 0.2s both; }
+.glass-stagger-3 { animation: slideInGlass 0.4s ease-out 0.3s both; }
+.glass-stagger-4 { animation: slideInGlass 0.4s ease-out 0.4s both; }
+
+@keyframes dropdownSlide {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-dropdown {
+  animation: dropdownSlide 0.3s ease-out forwards;
+}
+
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 }

@@ -258,7 +258,7 @@ export default function VariableSelectorPanel() {
   if (!isOpen) {
     return (
       <div 
-        className="relative bg-white border border-outline-variant rounded-xl p-stack-sm flex items-center gap-2 cursor-pointer shadow-md hover:bg-[#f5f5f5] transition-colors w-full"
+        className="relative bg-white/50 backdrop-blur-md border border-white/40 rounded-xl p-stack-sm flex items-center gap-2 cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:bg-white/70 transition-colors w-full"
         onClick={() => setIsOpen(true)}
       >
         <span className="material-symbols-outlined text-tertiary">public</span>
@@ -273,10 +273,10 @@ export default function VariableSelectorPanel() {
   }
 
   return (
-    <div className="relative w-full flex flex-col bg-white border border-outline-variant rounded-xl shadow-xl overflow-hidden transition-all duration-200">
+    <div className="relative w-full flex flex-col bg-white/50 backdrop-blur-md border border-white/40 rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.08)] overflow-hidden transition-all duration-200">
       
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-outline-variant p-stack-md bg-white flex-shrink-0">
+      <div className="flex items-center justify-between border-b border-white/30 p-stack-md bg-white/30 flex-shrink-0">
         <h3 className="font-headline-sm text-headline-sm font-semibold text-on-surface flex items-center gap-2">
           <span className="material-symbols-outlined text-tertiary">public</span>
           Environmental Variables
@@ -290,22 +290,28 @@ export default function VariableSelectorPanel() {
         <div className="flex flex-col gap-2">
           {mockGroups.map((group) => (
             <details key={group.id} className="group/section" open={group.id === 'physics_3d'}>
-              <summary className="flex items-center justify-between font-label-sm text-primary uppercase tracking-wider cursor-pointer py-1 border-b border-outline-variant/30 list-none">
+              <summary className="flex items-center justify-between text-[15px] font-extrabold text-primary uppercase tracking-wider cursor-pointer py-1 border-b border-outline-variant/30 list-none">
                 <span>{group.name}</span>
                 <span className="material-symbols-outlined text-sm group-open/section:rotate-180 transition-transform">expand_more</span>
               </summary>
-              <div className="flex flex-col gap-2 mt-2 pl-2">
-                {group.vars.map(v => (
-                  <label key={v.id} className="flex items-center gap-2 font-body-md text-on-surface cursor-pointer text-sm">
-                    <input 
-                      type="checkbox" 
-                      checked={selectedVariables.includes(v.id)}
-                      onChange={() => toggleVariable(v.id)}
-                      className="rounded border-outline-variant text-primary focus:ring-primary h-3 w-3"
-                    /> 
-                    {v.name}
-                  </label>
-                ))}
+              <div className="flex flex-col gap-2 mt-2 pl-2 animate-dropdown">
+                {group.vars.map(v => {
+                  const isSelected = selectedVariables.includes(v.id);
+                  return (
+                    <label 
+                      key={v.id} 
+                      className={`flex items-center gap-2 font-body-md cursor-pointer text-sm p-1.5 rounded transition-colors ${isSelected ? 'bg-[#6B8E6D] text-white' : 'text-on-surface hover:bg-white/40'}`}
+                    >
+                      <input 
+                        type="checkbox" 
+                        checked={isSelected}
+                        onChange={() => toggleVariable(v.id)}
+                        className="rounded border-outline-variant text-[#4a6b4c] focus:ring-[#6B8E6D] h-3 w-3"
+                      /> 
+                      {v.name}
+                    </label>
+                  )
+                })}
               </div>
             </details>
           ))}

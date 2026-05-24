@@ -9,13 +9,13 @@ export default function MapToolsPanel() {
   }
 
   return (
-    <div className="relative bg-white border border-outline-variant rounded-xl p-2 shadow-md flex gap-2 w-max">
+    <div className="liquid-glass rounded-xl p-2 flex flex-col gap-2 pointer-events-auto">
       <button 
         onClick={() => toggleTool('bounds')}
         className={`p-2 rounded-lg flex flex-col items-center gap-1 transition-colors ${
           activeMapTool === 'bounds' 
-            ? 'bg-primary/10 text-primary border border-primary/30' 
-            : 'hover:bg-[#f5f5f5] text-on-surface border border-transparent'
+            ? 'bg-[#6B8E6D] text-white border-2 border-[#6B8E6D]' 
+            : 'hover:bg-white/50 text-on-surface border-2 border-transparent'
         }`}
         title="Set Environment Bounds"
       >
@@ -27,8 +27,8 @@ export default function MapToolsPanel() {
         onClick={() => toggleTool('pin')}
         className={`p-2 rounded-lg flex flex-col items-center gap-1 transition-colors ${
           activeMapTool === 'pin' 
-            ? 'bg-primary/10 text-primary border border-primary/30' 
-            : 'hover:bg-[#f5f5f5] text-on-surface border border-transparent'
+            ? 'bg-[#6B8E6D] text-white border-2 border-[#6B8E6D]' 
+            : 'hover:bg-white/50 text-on-surface border-2 border-transparent'
         }`}
         title="Place Turbine"
       >

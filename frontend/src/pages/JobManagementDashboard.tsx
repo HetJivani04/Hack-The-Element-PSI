@@ -11,7 +11,7 @@ interface JobData {
   status: 'running' | 'completed' | 'queued' | 'failed'
   start_time: string
   queued_at: string
-  runtime_seconds?: number
+  runtime_minutes?: number
 }
 
 export default function JobManagementDashboard() {
@@ -165,7 +165,7 @@ export default function JobManagementDashboard() {
                         })}
                       </td>
                       <td className="px-6 py-4 text-on-surface-variant whitespace-nowrap">
-                        {job.runtime_seconds !== undefined ? `${job.runtime_seconds.toFixed(2)}s` : '-'}
+                        {job.runtime_minutes !== undefined ? `${job.runtime_minutes} mins` : '-'}
                       </td>
                       <td className="px-6 py-4 text-center whitespace-nowrap">
                         {job.status === 'completed' && (
